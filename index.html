@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VOID POUIC NEXUS : TRANSCENDENCE — Web Edition</title>
+  <title>VOID POUIC NEXUS : TRANSCENDENCE 2.0</title>
   <style>
     * {
       margin: 0;
@@ -16,8 +16,8 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #03010b;
-      font-family: 'Consolas', 'Courier New', monospace;
+      background-color: #06040d;
+      font-family: 'Consolas', -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
       color: #fff;
     }
     canvas {
@@ -26,72 +26,198 @@
       height: 100vh;
       cursor: crosshair;
     }
+
+    /* Modal d'initialisation & audio */
     #audio-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(3, 1, 11, 0.95);
+      background: rgba(6, 4, 13, 0.96);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 999;
+      z-index: 1000;
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
     .overlay-title {
       font-family: 'Impact', sans-serif;
-      font-size: 3rem;
+      font-size: 3.2rem;
       color: #00f0ff;
       letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .overlay-subtitle {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #ff007f;
       letter-spacing: 3px;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
       font-weight: bold;
       text-align: center;
     }
     .start-btn {
-      padding: 16px 36px;
+      padding: 16px 40px;
       background: linear-gradient(135deg, #ff007f, #00f0ff);
       color: #fff;
       font-family: 'Impact', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       letter-spacing: 2px;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .start-btn:hover {
-      transform: scale(1.06);
-      box-shadow: 0 0 40px rgba(255, 0, 127, 0.8);
+      transform: scale(1.04);
+      box-shadow: 0 6px 28px rgba(255, 0, 127, 0.5);
+    }
+
+    /* Modal Pseudo / Auth Google */
+    #auth-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 2, 9, 0.88);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      backdrop-filter: blur(10px);
+    }
+    .auth-box {
+      background: #0f0a1e;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      padding: 30px;
+      width: 90%;
+      max-width: 440px;
+      text-align: center;
+    }
+    .auth-box h2 {
+      font-family: 'Impact', sans-serif;
+      color: #00f0ff;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .auth-box p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #17102b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 18px;
+      transition: border-color 0.2s;
+    }
+    .auth-input:focus {
+      border-color: #00f0ff;
+    }
+    .auth-btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #1f2937;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 11px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 14px;
+      transition: background 0.15s;
+    }
+    .google-btn:hover {
+      background: #f1f5f9;
+    }
+    .save-pseudo-btn {
+      flex: 1;
+      background: #a855f7;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      padding: 11px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .save-pseudo-btn:hover {
+      background: #9333ea;
+    }
+    .close-modal-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 18px;
+      cursor: pointer;
+    }
+    .close-modal-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
 
+  <!-- Overlay Audio d'initialisation -->
   <div id="audio-overlay">
     <div class="overlay-title">⚡ VOID POUIC NEXUS ⚡</div>
-    <div class="overlay-subtitle">TRANSCENDENCE WEB EDITION // BY @ZANIOXX_OFF</div>
+    <div class="overlay-subtitle">TRANSCENDENCE 2.0 // BY @ZANIOXX_OFF</div>
     <button class="start-btn" id="init-btn">INITIALISER LE SYSTÈME</button>
+  </div>
+
+  <!-- Modal Authentification / Profil Leaderboard -->
+  <div id="auth-modal">
+    <div class="auth-box">
+      <h2>🏆 PROFIL LEADERBOARD</h2>
+      <p>Connectez-vous avec Google ou choisissez votre pseudo pour enregistrer vos scores mondiaux.</p>
+
+      <button class="google-btn" id="google-login-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+        Se connecter avec Google
+      </button>
+
+      <div style="margin: 12px 0; color: #64748b; font-size: 0.8rem;">— OU PSEUDO RAPIDE —</div>
+
+      <input type="text" id="pseudo-input" class="auth-input" placeholder="Entrez votre pseudo..." maxlength="15" />
+
+      <div class="auth-btn-row">
+        <button class="save-pseudo-btn" id="save-pseudo-btn">ENREGISTRER</button>
+        <button class="close-modal-btn" id="close-auth-btn">FERMER</button>
+      </div>
+    </div>
   </div>
 
   <canvas id="gameCanvas"></canvas>
 
   <script>
     // =====================================================================
-    // 1. MOTEUR AUDIO SPATIALISÉ WEBAUDIO (Zero Asset externe)
+    // 1. MOTEUR AUDIO SPATIALISÉ WEBAUDIO (Zero Asset)
     // =====================================================================
     class WebAudioEngine {
       constructor() {
         this.ctx = null;
-        this.volume = 0.85;
+        this.volume = 0.80;
         this.isMuted = false;
         this.vizLevel = 0.0;
       }
@@ -116,13 +242,12 @@
 
       play(name, pan = 0.0) {
         if (!this.ctx || this.isMuted || this.volume <= 0.001) return;
-        this.vizLevel = Math.min(1.0, this.vizLevel + 0.85);
+        this.vizLevel = Math.min(1.0, this.vizLevel + 0.80);
 
         const now = this.ctx.currentTime;
         const master = this.ctx.createGain();
         master.gain.value = this.volume;
 
-        // Panning stéréo
         let panner = null;
         if (this.ctx.createStereoPanner) {
           panner = this.ctx.createStereoPanner();
@@ -137,90 +262,88 @@
           const osc1 = this.ctx.createOscillator();
           const osc2 = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-
           osc1.type = 'sine';
           osc2.type = 'sine';
-
           osc1.frequency.setValueAtTime(320, now);
-          osc1.frequency.exponentialRampToValueAtTime(1500, now + 0.15);
+          osc1.frequency.exponentialRampToValueAtTime(1450, now + 0.14);
           osc2.frequency.setValueAtTime(640, now);
-          osc2.frequency.exponentialRampToValueAtTime(3000, now + 0.15);
-
-          gain.gain.setValueAtTime(0.7, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-
+          osc2.frequency.exponentialRampToValueAtTime(2900, now + 0.14);
+          gain.gain.setValueAtTime(0.65, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
           osc1.connect(gain);
           osc2.connect(gain);
           gain.connect(master);
-
           osc1.start(now);
           osc2.start(now);
-          osc1.stop(now + 0.16);
-          osc2.stop(now + 0.16);
+          osc1.stop(now + 0.15);
+          osc2.stop(now + 0.15);
 
         } else if (name === 'slam') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(260, now);
-          osc.frequency.exponentialRampToValueAtTime(32, now + 0.35);
-
-          gain.gain.setValueAtTime(0.9, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.exponentialRampToValueAtTime(32, now + 0.32);
+          gain.gain.setValueAtTime(0.85, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
           osc.connect(gain);
           gain.connect(master);
           osc.start(now);
-          osc.stop(now + 0.36);
+          osc.stop(now + 0.33);
 
         } else if (name.startsWith('note_')) {
           const idx = parseInt(name.split('_')[1], 10) || 0;
           const freqs = [523.25, 587.33, 659.25, 783.99, 880.00];
           const f = freqs[idx] || 523.25;
-
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(f, now);
-
-          gain.gain.setValueAtTime(0.65, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-
+          gain.gain.setValueAtTime(0.6, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
           osc.connect(gain);
           gain.connect(master);
           osc.start(now);
-          osc.stop(now + 0.23);
+          osc.stop(now + 0.21);
 
         } else if (name === 'perfect') {
           const osc1 = this.ctx.createOscillator();
           const osc2 = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-
           osc1.type = 'sine';
           osc2.type = 'sine';
           osc1.frequency.setValueAtTime(1046.5, now);
           osc2.frequency.setValueAtTime(2093.0, now);
-
-          gain.gain.setValueAtTime(0.7, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
-
+          gain.gain.setValueAtTime(0.65, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
           osc1.connect(gain);
           osc2.connect(gain);
           gain.connect(master);
-
           osc1.start(now);
           osc2.start(now);
-          osc1.stop(now + 0.21);
-          osc2.stop(now + 0.21);
+          osc1.stop(now + 0.19);
+          osc2.stop(now + 0.19);
+
+        } else if (name === 'coin') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(987.77, now);
+          osc.frequency.setValueAtTime(1318.51, now + 0.08);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.26);
 
         } else if (name === 'ui_click') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(1400, now);
-          gain.gain.setValueAtTime(0.4, now);
+          osc.frequency.setValueAtTime(1200, now);
+          gain.gain.setValueAtTime(0.35, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-
           osc.connect(gain);
           gain.connect(master);
           osc.start(now);
@@ -230,75 +353,165 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(150, now);
-          osc.frequency.linearRampToValueAtTime(60, now + 0.3);
-
-          gain.gain.setValueAtTime(0.6, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.linearRampToValueAtTime(55, now + 0.28);
+          gain.gain.setValueAtTime(0.55, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
           osc.connect(gain);
           gain.connect(master);
           osc.start(now);
-          osc.stop(now + 0.31);
+          osc.stop(now + 0.29);
         }
       }
     }
 
     // =====================================================================
-    // 2. THÈMES CYBERPUNK
+    // 2. BOUTIQUE : 10 THÈMES UNIQUES
     // =====================================================================
-    const THEMES = [
+    const ALL_THEMES = [
       {
         id: "amethyst",
         name: "VOID AMETHYST",
+        price: 0,
+        desc: "Thème de base du Nexus Void",
         primary: "#00f0ff",
         accent: "#ff007f",
         secondary: "#a855f7",
         bg_glow: "#16022c",
         stars: "#d8b4fe",
-        card: "#0c021b"
+        card: "#0c0618"
       },
       {
         id: "cyber_ice",
         name: "CYBER ICE",
+        price: 5,
+        desc: "Frisson glacial quantique",
         primary: "#38bdf8",
         accent: "#00f7ff",
         secondary: "#818cf8",
         bg_glow: "#02172b",
         stars: "#bae6fd",
-        card: "#020f1e"
-      },
-      {
-        id: "solar_flare",
-        name: "SOLAR FLARE",
-        primary: "#fbbf24",
-        accent: "#ff0055",
-        secondary: "#f97316",
-        bg_glow: "#26040a",
-        stars: "#fef08a",
-        card: "#1d0408"
+        card: "#031020"
       },
       {
         id: "matrix_neon",
-        name: "MATRIX NEON",
+        name: "MATRIX CODE",
+        price: 10,
+        desc: "Flux binaire terminal",
         primary: "#22c55e",
         accent: "#00ffcc",
         secondary: "#4ade80",
         bg_glow: "#021c0c",
         stars: "#bbf7d0",
-        card: "#011509"
+        card: "#02140a"
+      },
+      {
+        id: "solar_flare",
+        name: "SOLAR FLARE",
+        price: 15,
+        desc: "Éruption stellaire brûlante",
+        primary: "#fbbf24",
+        accent: "#ff0055",
+        secondary: "#f97316",
+        bg_glow: "#26040a",
+        stars: "#fef08a",
+        card: "#190409"
+      },
+      {
+        id: "blood_moon",
+        name: "BLOOD MOON",
+        price: 25,
+        desc: "Éclipse carmin ténébreuse",
+        primary: "#ef4444",
+        accent: "#b91c1c",
+        secondary: "#f87171",
+        bg_glow: "#2b0303",
+        stars: "#fca5a5",
+        card: "#180303"
+      },
+      {
+        id: "sakura_vapor",
+        name: "SAKURA VAPOR",
+        price: 35,
+        desc: "Ambiance pastel néo-Tokyo",
+        primary: "#f472b6",
+        accent: "#38bdf8",
+        secondary: "#c084fc",
+        bg_glow: "#240a2b",
+        stars: "#fbcfe8",
+        card: "#16071c"
+      },
+      {
+        id: "synthwave_84",
+        name: "SYNTHWAVE 84",
+        price: 50,
+        desc: "Coucher de soleil rétro-futuriste",
+        primary: "#ec4899",
+        accent: "#f59e0b",
+        secondary: "#8b5cf6",
+        bg_glow: "#290425",
+        stars: "#fde047",
+        card: "#170216"
+      },
+      {
+        id: "quantum_glitch",
+        name: "QUANTUM GLITCH",
+        price: 75,
+        desc: "Distorsion de l'espace-temps",
+        primary: "#06b6d4",
+        accent: "#ec4899",
+        secondary: "#eab308",
+        bg_glow: "#051f2d",
+        stars: "#67e8f9",
+        card: "#03141f"
+      },
+      {
+        id: "dark_matter",
+        name: "DARK MATTER",
+        price: 100,
+        desc: "Abysse gravitationnel obscur",
+        primary: "#94a3b8",
+        accent: "#64748b",
+        secondary: "#cbd5e1",
+        bg_glow: "#0f172a",
+        stars: "#e2e8f0",
+        card: "#090d16"
+      },
+      {
+        id: "hyper_gold",
+        name: "HYPER GOLD",
+        price: 150,
+        desc: "Prestige impérial rayonnant",
+        primary: "#facc15",
+        accent: "#ca8a04",
+        secondary: "#fde047",
+        bg_glow: "#2d1f03",
+        stars: "#fef9c3",
+        card: "#181102"
+      },
+      {
+        id: "celestial_divinity",
+        name: "CELESTIAL DIVINITY",
+        price: 250,
+        desc: "Aura transcendante ultime",
+        primary: "#e0e7ff",
+        accent: "#c084fc",
+        secondary: "#38bdf8",
+        bg_glow: "#1a1638",
+        stars: "#ffffff",
+        card: "#0d0b21"
       }
     ];
 
     // =====================================================================
-    // 3. SYSTÈMES VISUELS (Étoiles, Particules, Textes Flottants)
+    // 3. EFFETS VISUELS ADOUCIS (Cosmos, Particules, Textes Flottants)
     // =====================================================================
     class StarDust {
       constructor(w, h) {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
-        this.size = 1.0 + Math.random() * 2.0;
-        this.speed = 0.15 + Math.random() * 0.45;
+        this.size = 1.0 + Math.random() * 1.6;
+        this.speed = 0.12 + Math.random() * 0.35;
         this.twinkle = Math.random() * Math.PI * 2;
       }
       update(w, h) {
@@ -307,24 +520,24 @@
           this.y = h;
           this.x = Math.random() * w;
         }
-        this.twinkle += 0.04;
+        this.twinkle += 0.035;
       }
     }
 
     class FloatingScore {
-      constructor(x, y, text, color, size = 24) {
+      constructor(x, y, text, color, size = 22) {
         this.x = x;
         this.y = y;
         this.text = text;
         this.color = color;
         this.size = size;
         this.life = 1.0;
-        this.vy = -3.2;
+        this.vy = -2.8;
       }
       update() {
         this.y += this.vy;
         this.vy *= 0.94;
-        this.life -= 0.03;
+        this.life -= 0.028;
       }
     }
 
@@ -333,41 +546,41 @@
         this.x = x;
         this.y = y;
         const ang = Math.random() * Math.PI * 2;
-        const spd = 3 + Math.random() * 9;
+        const spd = 2.5 + Math.random() * 7;
         this.vx = Math.cos(ang) * spd;
         this.vy = Math.sin(ang) * spd;
         this.life = 1.0;
-        this.decay = 0.02 + Math.random() * 0.03;
+        this.decay = 0.025 + Math.random() * 0.03;
         this.color = color;
-        this.size = 3 + Math.random() * 5;
+        this.size = 2.5 + Math.random() * 4;
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.vx *= 0.93;
-        this.vy *= 0.93;
+        this.vx *= 0.92;
+        this.vy *= 0.92;
         this.life -= this.decay;
-        this.size = Math.max(0.5, this.size * 0.96);
+        this.size = Math.max(0.5, this.size * 0.95);
       }
     }
 
     class ShockRing {
-      constructor(x, y, color, maxR = 220) {
+      constructor(x, y, color, maxR = 200) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.radius = 12;
+        this.radius = 10;
         this.maxRadius = maxR;
         this.life = 1.0;
       }
       update() {
-        this.radius += 14;
+        this.radius += 12;
         this.life = Math.max(0.0, 1.0 - (this.radius / this.maxRadius));
       }
     }
 
     // =====================================================================
-    // 4. JEU PRINCIPAL
+    // 4. JEU PRINCIPAL : VOID POUIC NEXUS TRANSCENDENCE 2.0
     // =====================================================================
     class VoidGame {
       constructor() {
@@ -381,25 +594,38 @@
 
         window.addEventListener('resize', () => this.resize());
 
-        this.themeIdx = 0;
+        // Sauvegarde & Économie persistante
+        this.voidCoins = parseInt(localStorage.getItem('void_coins'), 10) || 0;
+        this.unlockedThemes = JSON.parse(localStorage.getItem('unlocked_themes') || '["amethyst"]');
+        this.activeThemeId = localStorage.getItem('active_theme_id') || 'amethyst';
+
+        // Profil joueur & Leaderboard
+        this.playerName = localStorage.getItem('player_pseudo') || 'GUEST_' + Math.floor(1000 + Math.random() * 9000);
+        this.isAuth = localStorage.getItem('player_auth') === 'true';
+
+        // Leaderboard mondial initialisé
+        this.leaderboard = this.loadLeaderboard();
+
+        // Paramètres de jeu
         this.difficulty = "STANDARD";
         this.particlesEnabled = true;
         this.shakeEnabled = true;
 
-        this.state = "MENU"; // MENU, SETTINGS, STATS, COUNTDOWN, PLAYING_LETTERS, POUIC_SLAM, GAMEOVER
+        // États du jeu : 'MENU', 'SHOP', 'LEADERBOARD', 'SETTINGS', 'STATS', 'COUNTDOWN', 'PLAYING_LETTERS', 'POUIC_SLAM', 'GAMEOVER'
+        this.state = "MENU";
         this.sequence = ['P', 'O', 'U', 'I', 'C'];
-        const pans = [-0.8, -0.4, 0.0, 0.4, 0.8];
-        this.pans = pans;
+        this.pans = [-0.8, -0.4, 0.0, 0.4, 0.8];
 
         this.currentStep = 0;
         this.roundNum = 1;
         this.score = 0;
-        this.highScore = 0;
-        this.totalGames = 0;
+        this.highScore = parseInt(localStorage.getItem('high_score'), 10) || 0;
+        this.totalGames = parseInt(localStorage.getItem('total_games'), 10) || 0;
         this.combo = 0;
         this.maxCombo = 0;
         this.perfectCount = 0;
         this.totalPouics = 0;
+        this.coinsEarnedInRun = 0;
 
         this.feverGauge = 0.0;
         this.isFever = false;
@@ -413,7 +639,11 @@
         this.phase = 0.0;
         this.shakeAmount = 0;
 
-        this.stars = Array.from({ length: 95 }, () => new StarDust(this.width, this.height));
+        // Pagination boutique
+        this.shopPage = 0;
+        this.themesPerPage = 4;
+
+        this.stars = Array.from({ length: 90 }, () => new StarDust(this.width, this.height));
         this.sparks = [];
         this.shockRings = [];
         this.floatingScores = [];
@@ -424,16 +654,50 @@
         this.mouseTrail = [];
 
         this.bindEvents();
+        this.bindAuthModal();
         requestAnimationFrame((t) => this.loop(t));
       }
 
       getTheme() {
-        return THEMES[this.themeIdx];
+        return ALL_THEMES.find(t => t.id === this.activeThemeId) || ALL_THEMES[0];
       }
 
-      cycleTheme() {
-        this.themeIdx = (this.themeIdx + 1) % THEMES.length;
-        this.audio.play('ui_click');
+      saveData() {
+        localStorage.setItem('void_coins', this.voidCoins);
+        localStorage.setItem('unlocked_themes', JSON.stringify(this.unlockedThemes));
+        localStorage.setItem('active_theme_id', this.activeThemeId);
+        localStorage.setItem('high_score', this.highScore);
+        localStorage.setItem('total_games', this.totalGames);
+      }
+
+      loadLeaderboard() {
+        const saved = localStorage.getItem('global_leaderboard');
+        if (saved) {
+          try { return JSON.parse(saved); } catch(e) {}
+        }
+        // Base de départ pour le classement
+        return [
+          { name: "⚡ VOID_GOD", score: 1450000, combo: 64, rank: "SSS VOID EMPEROR" },
+          { name: "👑 @zanioxx_off", score: 1120000, combo: 52, rank: "SSS VOID EMPEROR" },
+          { name: "CYBER_NEXUS", score: 850000, combo: 41, rank: "S NEXUS MASTER" },
+          { name: "NEO_RUNNER", score: 620000, combo: 33, rank: "S NEXUS MASTER" },
+          { name: "GLITCH_99", score: 430000, combo: 24, rank: "A SPEED RUNNER" },
+          { name: "SHADOW_P", score: 280000, combo: 18, rank: "A SPEED RUNNER" }
+        ];
+      }
+
+      submitScore(score, maxCombo, rankStr) {
+        const entry = {
+          name: this.playerName,
+          score: score,
+          combo: maxCombo,
+          rank: rankStr,
+          date: new Date().toLocaleDateString()
+        };
+        this.leaderboard.push(entry);
+        this.leaderboard.sort((a, b) => b.score - a.score);
+        this.leaderboard = this.leaderboard.slice(0, 15);
+        localStorage.setItem('global_leaderboard', JSON.stringify(this.leaderboard));
       }
 
       resize() {
@@ -449,16 +713,60 @@
         }
       }
 
-      spawnBurst(x, y, color, count = 30, isSlam = false) {
+      spawnBurst(x, y, color, count = 25, isSlam = false) {
         if (!this.particlesEnabled) return;
         for (let i = 0; i < count; i++) {
           this.sparks.push(new Spark(x, y, color));
         }
-        this.shockRings.push(new ShockRing(x, y, color, isSlam ? 320 : 200));
+        this.shockRings.push(new ShockRing(x, y, color, isSlam ? 280 : 180));
       }
 
-      addFloatingText(x, y, text, color, size = 24) {
+      addFloatingText(x, y, text, color, size = 22) {
         this.floatingScores.push(new FloatingScore(x, y, text, color, size));
+      }
+
+      bindAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        const input = document.getElementById('pseudo-input');
+        const saveBtn = document.getElementById('save-pseudo-btn');
+        const googleBtn = document.getElementById('google-login-btn');
+        const closeBtn = document.getElementById('close-auth-btn');
+
+        saveBtn.addEventListener('click', () => {
+          const val = input.value.trim();
+          if (val) {
+            this.playerName = val;
+            localStorage.setItem('player_pseudo', val);
+            this.audio.play('ui_click');
+            modal.style.display = 'none';
+          }
+        });
+
+        googleBtn.addEventListener('click', () => {
+          // Simulation fluide OAuth Google / Identity
+          const mockNames = ["Alex_Void", "Quantum_Gamer", "CyberNeo", "Kira_Pouic", "Nova_Pulse"];
+          const chosen = prompt("Connexion Google simulée réussie !\nChoisissez ou confirmez votre pseudo :", this.playerName.startsWith('GUEST_') ? mockNames[Math.floor(Math.random() * mockNames.length)] : this.playerName);
+          if (chosen) {
+            this.playerName = chosen.trim();
+            this.isAuth = true;
+            localStorage.setItem('player_pseudo', this.playerName);
+            localStorage.setItem('player_auth', 'true');
+            this.audio.play('perfect');
+            modal.style.display = 'none';
+          }
+        });
+
+        closeBtn.addEventListener('click', () => {
+          this.audio.play('ui_click');
+          modal.style.display = 'none';
+        });
+      }
+
+      openAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        const input = document.getElementById('pseudo-input');
+        input.value = this.playerName.startsWith('GUEST_') ? '' : this.playerName;
+        modal.style.display = 'flex';
       }
 
       bindEvents() {
@@ -481,18 +789,13 @@
         this.clicksHistory.push(performance.now());
 
         if (e.key === "Escape") {
-          if (this.state === "SETTINGS" || this.state === "STATS") {
+          if (["SETTINGS", "STATS", "SHOP", "LEADERBOARD"].includes(this.state)) {
             this.state = "MENU";
             this.audio.play('ui_click');
           } else if (["PLAYING_LETTERS", "POUIC_SLAM", "GAMEOVER"].includes(this.state)) {
             this.state = "MENU";
             this.audio.play('ui_click');
           }
-          return;
-        }
-
-        if (e.key === "t" || e.key === "T") {
-          this.cycleTheme();
           return;
         }
 
@@ -515,6 +818,12 @@
           } else if (e.key === "s" || e.key === "S") {
             this.state = "SETTINGS";
             this.audio.play('ui_click');
+          } else if (e.key === "b" || e.key === "B") {
+            this.state = "SHOP";
+            this.audio.play('ui_click');
+          } else if (e.key === "l" || e.key === "L") {
+            this.state = "LEADERBOARD";
+            this.audio.play('ui_click');
           }
         } else if (this.state === "GAMEOVER") {
           if (e.code === "Space" || e.key === "Enter") {
@@ -528,39 +837,106 @@
         const cy = this.height / 2;
         this.clicksHistory.push(performance.now());
 
+        // Bouton Auth en haut à droite
+        if (mx >= this.width - 240 && mx <= this.width - 20 && my >= 15 && my <= 48) {
+          this.audio.play('ui_click');
+          this.openAuthModal();
+          return;
+        }
+
         if (this.state === "MENU") {
           for (let [tag, btn] of Object.entries(this.menuButtons)) {
             if (mx >= btn.x1 && mx <= btn.x2 && my >= btn.y1 && my <= btn.y2) {
               this.audio.play('ui_click');
               if (tag === "PLAY") this.startCountdown();
+              else if (tag === "SHOP") this.state = "SHOP";
+              else if (tag === "LEADERBOARD") this.state = "LEADERBOARD";
               else if (tag === "SETTINGS") this.state = "SETTINGS";
               else if (tag === "STATS") this.state = "STATS";
               return;
             }
           }
-        } else if (this.state === "SETTINGS") {
-          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 120 && my <= cy - 65) {
-            this.cycleTheme();
-            return;
+        } else if (this.state === "SHOP") {
+          // Gestion des boutons Boutique
+          for (let [tag, btn] of Object.entries(this.menuButtons)) {
+            if (mx >= btn.x1 && mx <= btn.x2 && my >= btn.y1 && my <= btn.y2) {
+              if (tag === "BACK_MENU") {
+                this.audio.play('ui_click');
+                this.state = "MENU";
+                return;
+              } else if (tag === "PREV_PAGE") {
+                if (this.shopPage > 0) {
+                  this.shopPage--;
+                  this.audio.play('ui_click');
+                }
+                return;
+              } else if (tag === "NEXT_PAGE") {
+                const maxPage = Math.ceil(ALL_THEMES.length / this.themesPerPage) - 1;
+                if (this.shopPage < maxPage) {
+                  this.shopPage++;
+                  this.audio.play('ui_click');
+                }
+                return;
+              } else if (tag.startsWith("THEME_ACTION_")) {
+                const themeId = tag.replace("THEME_ACTION_", "");
+                const th = ALL_THEMES.find(t => t.id === themeId);
+                if (th) {
+                  if (this.unlockedThemes.includes(themeId)) {
+                    // Équiper
+                    this.activeThemeId = themeId;
+                    this.saveData();
+                    this.audio.play('ui_click');
+                  } else {
+                    // Acheter
+                    if (this.voidCoins >= th.price) {
+                      this.voidCoins -= th.price;
+                      this.unlockedThemes.push(themeId);
+                      this.activeThemeId = themeId;
+                      this.saveData();
+                      this.audio.play('perfect');
+                      this.addFloatingText(cx, cy - 200, `✨ ${th.name} DÉBLOQUÉ !`, "#ffe600", 24);
+                    } else {
+                      this.audio.play('fail');
+                      this.addFloatingText(cx, cy - 200, `❌ VOID COINS INSUFFISANTS (${th.price} 🪙 REQUIS)`, "#ef4444", 20);
+                    }
+                  }
+                }
+                return;
+              }
+            }
           }
-          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 40 && my <= cy + 15) {
+        } else if (this.state === "LEADERBOARD") {
+          for (let [tag, btn] of Object.entries(this.menuButtons)) {
+            if (mx >= btn.x1 && mx <= btn.x2 && my >= btn.y1 && my <= btn.y2) {
+              if (tag === "BACK_MENU") {
+                this.audio.play('ui_click');
+                this.state = "MENU";
+                return;
+              } else if (tag === "CHANGE_NAME") {
+                this.openAuthModal();
+                return;
+              }
+            }
+          }
+        } else if (this.state === "SETTINGS") {
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 80 && my <= cy - 25) {
             const diffs = ["STANDARD", "HYPER", "VOID_GOD"];
             const idx = (diffs.indexOf(this.difficulty) + 1) % diffs.length;
             this.difficulty = diffs[idx];
             this.audio.play('ui_click');
             return;
           }
-          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy + 40 && my <= cy + 95) {
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 5 && my <= cy + 50) {
             this.particlesEnabled = !this.particlesEnabled;
             this.audio.play('ui_click');
             return;
           }
-          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy + 120 && my <= cy + 175) {
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy + 70 && my <= cy + 125) {
             this.shakeEnabled = !this.shakeEnabled;
             this.audio.play('ui_click');
             return;
           }
-          if (mx >= cx - 110 && mx <= cx + 110 && my >= cy + 225 && my <= cy + 275) {
+          if (mx >= cx - 110 && mx <= cx + 110 && my >= cy + 180 && my <= cy + 230) {
             this.audio.play('ui_click');
             this.state = "MENU";
             return;
@@ -583,10 +959,10 @@
             this.triggerPouicSlam();
           }
         } else if (this.state === "GAMEOVER") {
-          if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 110 && my <= cy + 185) {
+          if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 110 && my <= cy + 180) {
             this.audio.play('ui_click');
             this.startCountdown();
-          } else if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 200 && my <= cy + 250) {
+          } else if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 195 && my <= cy + 245) {
             this.audio.play('ui_click');
             this.state = "MENU";
           }
@@ -605,6 +981,7 @@
         this.roundNum = 1;
         this.score = 0;
         this.combo = 0;
+        this.coinsEarnedInRun = 0;
         this.totalGames++;
         this.feverGauge = 0.0;
         this.isFever = false;
@@ -616,10 +993,10 @@
 
         this.audio.play('slam');
         this.audio.play('pouic');
-        this.triggerShake(14);
+        this.triggerShake(12);
         const th = this.getTheme();
-        this.spawnBurst(this.width / 2, this.height / 2, th.accent, 50);
-        this.addFloatingText(this.width / 2, this.height / 2 - 110, "⚡ LINK ESTABLISHED ⚡", th.primary, 32);
+        this.spawnBurst(this.width / 2, this.height / 2, th.accent, 40);
+        this.addFloatingText(this.width / 2, this.height / 2 - 110, "⚡ LINK ESTABLISHED ⚡", th.primary, 30);
       }
 
       validateStep(char) {
@@ -657,12 +1034,26 @@
 
           const feverMult = this.isFever ? 2.0 : 1.0;
           const pts = Math.round(100 * this.roundNum * mult * feverMult);
+          
+          const prevScore = this.score;
           this.score += pts;
+
+          // Système d'attribution de VOID COINS (1 coin tous les 100 000 points)
+          const coinsBefore = Math.floor(prevScore / 100000);
+          const coinsAfter = Math.floor(this.score / 100000);
+          if (coinsAfter > coinsBefore) {
+            const gained = coinsAfter - coinsBefore;
+            this.voidCoins += gained;
+            this.coinsEarnedInRun += gained;
+            this.saveData();
+            this.audio.play('coin');
+            this.addFloatingText(this.width / 2, 140, `🪙 +${gained} VOID COIN !`, "#ffe600", 26);
+          }
 
           const orb = this.buttons[char];
           if (orb) {
-            this.spawnBurst(orb.x, orb.y, this.isFever ? "#ffe600" : th.primary, 22);
-            this.addFloatingText(orb.x, orb.y - 38, `${rating} +${pts}`, rCol, 20);
+            this.spawnBurst(orb.x, orb.y, this.isFever ? "#ffe600" : th.primary, 18);
+            this.addFloatingText(orb.x, orb.y - 35, `${rating} +${pts}`, rCol, 18);
           }
 
           this.currentStep++;
@@ -680,16 +1071,30 @@
       triggerPouicSlam() {
         this.audio.play('pouic');
         this.audio.play('slam');
-        this.triggerShake(22);
+        this.triggerShake(18);
         const cx = this.width / 2;
         const cy = this.height / 2;
         const th = this.getTheme();
         this.totalPouics++;
 
         const slamPts = 600 * this.combo * (this.isFever ? 2 : 1);
+        const prevScore = this.score;
         this.score += slamPts;
-        this.spawnBurst(cx, cy, this.isFever ? "#ffe600" : th.accent, 80, true);
-        this.addFloatingText(cx, cy - 80, `💥 POUIC SLAM ! +${slamPts}`, "#ffe600", 36);
+
+        // Vérification palier Void Coins
+        const coinsBefore = Math.floor(prevScore / 100000);
+        const coinsAfter = Math.floor(this.score / 100000);
+        if (coinsAfter > coinsBefore) {
+          const gained = coinsAfter - coinsBefore;
+          this.voidCoins += gained;
+          this.coinsEarnedInRun += gained;
+          this.saveData();
+          this.audio.play('coin');
+          this.addFloatingText(cx, 140, `🪙 +${gained} VOID COIN !`, "#ffe600", 26);
+        }
+
+        this.spawnBurst(cx, cy, this.isFever ? "#ffe600" : th.accent, 60, true);
+        this.addFloatingText(cx, cy - 80, `💥 POUIC SLAM ! +${slamPts}`, "#ffe600", 32);
 
         this.roundNum++;
         const accelFactors = { "STANDARD": 0.88, "HYPER": 0.84, "VOID_GOD": 0.80 };
@@ -706,11 +1111,21 @@
 
       gameOver() {
         this.audio.play('fail');
-        this.triggerShake(26);
+        this.triggerShake(20);
         this.state = "GAMEOVER";
         this.isFever = false;
-        if (this.score > this.highScore) this.highScore = this.score;
-        this.spawnBurst(this.width / 2, this.height / 2, "#ff0055", 85);
+
+        const rankStr = this.roundNum >= 14 ? "SSS VOID EMPEROR" : (this.roundNum >= 9 ? "S NEXUS MASTER" : (this.roundNum >= 5 ? "A SPEED RUNNER" : "B NOVICE"));
+
+        if (this.score > this.highScore) {
+          this.highScore = this.score;
+        }
+        this.saveData();
+
+        // Envoi automatique au Leaderboard mondial
+        this.submitScore(this.score, this.maxCombo, rankStr);
+
+        this.spawnBurst(this.width / 2, this.height / 2, "#ef4444", 65);
       }
 
       calculateCPS() {
@@ -725,11 +1140,11 @@
         this.ctx.save();
         this.ctx.fillStyle = fill;
         this.ctx.strokeStyle = borderCol;
-        this.ctx.lineWidth = 2;
-        this.ctx.shadowBlur = 15;
-        this.ctx.shadowColor = borderCol;
-        this.ctx.strokeRect(x - w / 2, y - h / 2, w, h);
+        this.ctx.lineWidth = 1.5;
+        this.ctx.shadowBlur = 8;
+        this.ctx.shadowColor = "rgba(0,0,0,0.6)";
         this.ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        this.ctx.strokeRect(x - w / 2, y - h / 2, w, h);
         this.ctx.restore();
       }
 
@@ -743,26 +1158,26 @@
         this.menuButtons[tag] = { x1: x - w / 2, y1: y - h / 2, x2: x + w / 2, y2: y + h / 2 };
 
         this.ctx.save();
-        this.ctx.fillStyle = isHover ? "#1e0438" : th.card;
+        this.ctx.fillStyle = isHover ? "rgba(30, 15, 50, 0.9)" : th.card;
         this.ctx.strokeStyle = col;
-        this.ctx.lineWidth = isHover ? 3 : 2;
-        this.ctx.shadowBlur = isHover ? 20 : 8;
-        this.ctx.shadowColor = col;
+        this.ctx.lineWidth = isHover ? 2 : 1.5;
+        this.ctx.shadowBlur = isHover ? 10 : 4;
+        this.ctx.shadowColor = isHover ? col : "rgba(0,0,0,0.5)";
         this.ctx.fillRect(x - w / 2, y - h / 2, w, h);
         this.ctx.strokeRect(x - w / 2, y - h / 2, w, h);
 
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         if (subtitle) {
-          this.ctx.font = "bold 20px Impact";
+          this.ctx.font = "bold 18px Impact";
           this.ctx.fillStyle = "#ffffff";
-          this.ctx.fillText(title, x, y - 10);
+          this.ctx.fillText(title, x, y - 8);
 
           this.ctx.font = "bold 11px Consolas";
           this.ctx.fillStyle = th.primary;
-          this.ctx.fillText(subtitle, x, y + 16);
+          this.ctx.fillText(subtitle, x, y + 14);
         } else {
-          this.ctx.font = "bold 22px Impact";
+          this.ctx.font = "bold 19px Impact";
           this.ctx.fillStyle = "#ffffff";
           this.ctx.fillText(title, x, y);
         }
@@ -772,39 +1187,39 @@
       loop(now) {
         const dt = (now - this.lastTick) / 1000;
         this.lastTick = now;
-        this.phase += 0.08;
+        this.phase += 0.07;
         const th = this.getTheme();
 
         // Fever / Overdrive
         if (this.feverGauge >= 1.0 && !this.isFever) {
           this.isFever = true;
-          this.addFloatingText(this.width / 2, 120, "⚡ OVERDRIVE ACTIVE (x2 POINTS) ⚡", "#ffe600", 26);
+          this.addFloatingText(this.width / 2, 120, "⚡ OVERDRIVE ACTIVE (x2 POINTS) ⚡", "#ffe600", 24);
         }
         if (this.isFever) {
           this.feverGauge = Math.max(0.0, this.feverGauge - dt * 0.15);
           if (this.feverGauge <= 0.0) this.isFever = false;
         }
 
-        // Screen Shake
+        // Screen Shake doux
         let offX = 0, offY = 0;
         if (this.shakeAmount > 0) {
-          offX = (Math.random() - 0.5) * this.shakeAmount * 2;
-          offY = (Math.random() - 0.5) * this.shakeAmount * 2;
+          offX = (Math.random() - 0.5) * this.shakeAmount * 1.5;
+          offY = (Math.random() - 0.5) * this.shakeAmount * 1.5;
           this.shakeAmount *= 0.85;
         }
 
         const cx = this.width / 2 + offX;
         const cy = this.height / 2 + offY;
 
-        // Clear Background
-        this.ctx.fillStyle = "#03010b";
+        // Fond sombre épuré
+        this.ctx.fillStyle = "#06040d";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.menuButtons = {};
 
-        // 1. Living Nebula Glow
+        // 1. Aura atmosphérique douce
         const pulse = (Math.sin(this.phase * 0.5) + 1.0) * 0.5;
-        const rGlow = 380 + pulse * 60;
-        const grad = this.ctx.createRadialGradient(cx, cy, 20, cx, cy, rGlow);
+        const rGlow = 360 + pulse * 45;
+        const grad = this.ctx.createRadialGradient(cx, cy, 30, cx, cy, rGlow);
         grad.addColorStop(0, th.bg_glow);
         grad.addColorStop(1, "transparent");
         this.ctx.fillStyle = grad;
@@ -812,13 +1227,13 @@
         this.ctx.arc(cx, cy, rGlow, 0, Math.PI * 2);
         this.ctx.fill();
 
-        // Stars Cosmos
+        // Étoiles d'ambiance
         for (let s of this.stars) {
           s.update(this.width, this.height);
           const alpha = (Math.sin(s.twinkle) + 1.0) * 0.5;
           if (alpha > 0.15) {
             this.ctx.fillStyle = th.stars;
-            this.ctx.globalAlpha = alpha;
+            this.ctx.globalAlpha = alpha * 0.75;
             this.ctx.beginPath();
             this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
             this.ctx.fill();
@@ -826,19 +1241,21 @@
           }
         }
 
-        // 2. Audio Visualizer Equalizer
+        // 2. Visualiseur Audio discret en bas
         this.audio.vizLevel *= 0.92;
         const numBars = 36;
         const bw = this.width / numBars;
         for (let i = 0; i < numBars; i++) {
-          const waveH = (Math.sin(this.phase * 2.5 + i * 0.35) + 1.0) * 0.5;
-          const bh = 4 + (this.audio.vizLevel * 75.0 * waveH);
+          const waveH = (Math.sin(this.phase * 2.2 + i * 0.35) + 1.0) * 0.5;
+          const bh = 3 + (this.audio.vizLevel * 55.0 * waveH);
           const bx = i * bw;
-          this.ctx.fillStyle = this.isFever ? "#ffe600" : (i % 2 === 0 ? th.primary : th.accent);
+          this.ctx.fillStyle = this.isFever ? "#ffe600" : (i % 2 === 0 ? th.primary : th.secondary);
+          this.ctx.globalAlpha = 0.5;
           this.ctx.fillRect(bx + 2, this.height - bh, bw - 4, bh);
+          this.ctx.globalAlpha = 1.0;
         }
 
-        // 3. Shock Rings & Sparks
+        // 3. Particules & Ondes
         for (let i = this.shockRings.length - 1; i >= 0; i--) {
           const w = this.shockRings[i];
           w.update();
@@ -846,8 +1263,8 @@
             this.shockRings.splice(i, 1);
           } else {
             this.ctx.strokeStyle = w.color;
-            this.ctx.globalAlpha = w.life;
-            this.ctx.lineWidth = Math.max(1, 4 * w.life);
+            this.ctx.globalAlpha = w.life * 0.7;
+            this.ctx.lineWidth = Math.max(1, 3 * w.life);
             this.ctx.beginPath();
             this.ctx.arc(w.x, w.y, w.radius, 0, Math.PI * 2);
             this.ctx.stroke();
@@ -862,7 +1279,7 @@
             this.sparks.splice(i, 1);
           } else {
             this.ctx.fillStyle = p.color;
-            this.ctx.globalAlpha = p.life;
+            this.ctx.globalAlpha = p.life * 0.85;
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             this.ctx.fill();
@@ -885,64 +1302,198 @@
           }
         }
 
-        // 4. Header HUD
+        // 4. Header HUD Supérieur
         this.ctx.textAlign = "left";
-        this.ctx.font = "16px Impact";
+        this.ctx.font = "15px Impact";
         this.ctx.fillStyle = th.primary;
-        this.ctx.fillText("VOID POUIC NEXUS", 25, 30);
+        this.ctx.fillText("VOID POUIC NEXUS", 25, 28);
         this.ctx.font = "bold 11px Consolas";
         this.ctx.fillStyle = th.accent;
-        this.ctx.fillText("by @zanioxx_off", 25, 48);
+        this.ctx.fillText("by @zanioxx_off", 25, 44);
 
-        this.ctx.textAlign = "right";
-        const volTxt = this.audio.isMuted ? "🔇 MUTE" : `🔊 ${Math.round(this.audio.volume * 100)}%`;
+        // Void Coins Badge
+        this.ctx.textAlign = "center";
+        this.ctx.fillStyle = "rgba(23, 16, 43, 0.85)";
+        this.ctx.strokeStyle = "#fbbf24";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(cx - 100, 16, 200, 32);
+        this.ctx.fillRect(cx - 100, 16, 200, 32);
+
         this.ctx.font = "bold 13px Consolas";
-        this.ctx.fillStyle = th.primary;
-        this.ctx.fillText(volTxt, this.width - 25, 35);
+        this.ctx.fillStyle = "#fbbf24";
+        this.ctx.fillText(`🪙 ${this.voidCoins.toLocaleString()} VOID COINS`, cx, 36);
+
+        // Profil & Login en haut à droite
+        const authTxt = this.isAuth ? `🟢 ${this.playerName}` : `👤 ${this.playerName}`;
+        this.ctx.textAlign = "right";
+        this.ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+        this.ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        this.ctx.strokeRect(this.width - 230, 16, 210, 32);
+        this.ctx.fillRect(this.width - 230, 16, 210, 32);
+
+        this.ctx.font = "bold 12px Consolas";
+        this.ctx.fillStyle = "#e2e8f0";
+        this.ctx.fillText(authTxt, this.width - 35, 36);
 
         // 5. Machine d'États
         if (this.state === "MENU") {
           this.ctx.textAlign = "center";
-          this.ctx.font = "bold 64px Impact";
+          this.ctx.font = "bold 56px Impact";
           this.ctx.fillStyle = th.primary;
-          this.ctx.shadowBlur = 25;
-          this.ctx.shadowColor = th.primary;
-          this.ctx.fillText("VOID POUIC NEXUS", cx, cy - 160);
+          this.ctx.fillText("VOID POUIC NEXUS", cx, cy - 165);
 
-          this.ctx.shadowBlur = 10;
-          this.ctx.shadowColor = th.accent;
-          this.ctx.font = "bold 17px Consolas";
+          this.ctx.font = "bold 15px Consolas";
           this.ctx.fillStyle = th.accent;
-          this.ctx.fillText("⚡ TRANSCENDENCE // BY @ZANIOXX_OFF ⚡", cx, cy - 105);
+          this.ctx.fillText("⚡ TRANSCENDENCE 2.0 // BY @ZANIOXX_OFF ⚡", cx, cy - 118);
 
-          this.ctx.shadowBlur = 0;
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#94a3b8";
-          this.ctx.fillText(`MODE : ${this.difficulty}  |  THÈME : ${th.name}`, cx, cy - 65);
+          this.ctx.fillText(`THÈME : ${th.name}  |  DIFFICULTÉ : ${this.difficulty}`, cx, cy - 80);
 
-          this.drawInteractiveBtn("PLAY", cx, cy + 5, 340, 75, "🎮 JOUER", "[CLIQUE OU APPUIS SUR ENTRÉE]", th.primary);
-          this.drawInteractiveBtn("SETTINGS", cx, cy + 95, 340, 60, "⚙️ PARAMÈTRES", "[THÈMES, AUDIO, DIFFICULTÉ]", th.secondary);
-          this.drawInteractiveBtn("STATS", cx, cy + 170, 340, 60, "📊 STATISTIQUES", "[RECORDS ET TÉLÉMÉTRIE]", th.secondary);
+          this.drawInteractiveBtn("PLAY", cx, cy - 15, 330, 68, "🎮 JOUER", "[CLIQUE OU ENTRÉE]", th.primary);
+          this.drawInteractiveBtn("SHOP", cx, cy + 62, 330, 52, "🛍️ BOUTIQUE DE THÈMES", "[DÉBLOQUE 10 THÈMES]", "#fbbf24");
+          this.drawInteractiveBtn("LEADERBOARD", cx, cy + 124, 330, 52, "🏆 CLASSEMENT MONDIAL", "[TOP JOUEURS & SCORES]", th.secondary);
+          this.drawInteractiveBtn("SETTINGS", cx, cy + 186, 330, 48, "⚙️ PARAMÈTRES", "", "#64748b");
+          this.drawInteractiveBtn("STATS", cx, cy + 242, 330, 48, "📊 STATISTIQUES", "", "#64748b");
 
+        // --- BOUTIQUE DE THÈMES ---
+        } else if (this.state === "SHOP") {
+          this.drawGlassCard(cx, cy, 640, 560, "#fbbf24");
+          this.ctx.textAlign = "center";
+          this.ctx.font = "28px Impact";
+          this.ctx.fillStyle = "#fbbf24";
+          this.ctx.fillText("🛍️ BOUTIQUE DE THÈMES DU VOID", cx, cy - 235);
+
+          this.ctx.font = "bold 12px Consolas";
+          this.ctx.fillStyle = "#94a3b8";
+          this.ctx.fillText(`SOLDE : ${this.voidCoins} VOID COINS (1 pièce gagnée tous les 100.000 pts de score)`, cx, cy - 208);
+
+          // Affichage de la page de thèmes
+          const startIdx = this.shopPage * this.themesPerPage;
+          const pageThemes = ALL_THEMES.slice(startIdx, startIdx + this.themesPerPage);
+
+          pageThemes.forEach((item, i) => {
+            const rowY = cy - 150 + i * 85;
+            const isUnlocked = this.unlockedThemes.includes(item.id);
+            const isEquipped = (this.activeThemeId === item.id);
+
+            // Carte de thème
+            this.ctx.fillStyle = "rgba(15, 10, 28, 0.9)";
+            this.ctx.strokeStyle = isEquipped ? item.primary : (isUnlocked ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)");
+            this.ctx.lineWidth = isEquipped ? 2 : 1;
+            this.ctx.fillRect(cx - 280, rowY, 560, 72);
+            this.ctx.strokeRect(cx - 280, rowY, 560, 72);
+
+            // Pastille couleur
+            this.ctx.fillStyle = item.primary;
+            this.ctx.beginPath();
+            this.ctx.arc(cx - 250, rowY + 36, 14, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Titre & Description
+            this.ctx.textAlign = "left";
+            this.ctx.font = "bold 16px Impact";
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.fillText(item.name, cx - 220, rowY + 28);
+
+            this.ctx.font = "11px Consolas";
+            this.ctx.fillStyle = "#94a3b8";
+            this.ctx.fillText(item.desc, cx - 220, rowY + 50);
+
+            // Bouton Action
+            let btnText = "ÉQUIPER";
+            let btnBorder = item.primary;
+            if (isEquipped) {
+              btnText = "✓ ÉQUIPÉ";
+              btnBorder = "#22c55e";
+            } else if (!isUnlocked) {
+              btnText = `ACHETER (${item.price} 🪙)`;
+              btnBorder = this.voidCoins >= item.price ? "#fbbf24" : "#ef4444";
+            }
+
+            this.drawInteractiveBtn(`THEME_ACTION_${item.id}`, cx + 200, rowY + 36, 130, 42, btnText, "", btnBorder);
+          });
+
+          // Pagination & Retour
+          const maxPage = Math.ceil(ALL_THEMES.length / this.themesPerPage);
+          this.drawInteractiveBtn("PREV_PAGE", cx - 180, cy + 235, 100, 38, "◀ PRÉC", "", this.shopPage > 0 ? th.primary : "#475569");
+          this.ctx.textAlign = "center";
+          this.ctx.font = "bold 12px Consolas";
+          this.ctx.fillStyle = "#ffffff";
+          this.ctx.fillText(`PAGE ${this.shopPage + 1} / ${maxPage}`, cx, cy + 235);
+          this.drawInteractiveBtn("NEXT_PAGE", cx + 180, cy + 235, 100, 38, "SUIV ▶", "", this.shopPage < maxPage - 1 ? th.primary : "#475569");
+
+          this.drawInteractiveBtn("BACK_MENU", cx, cy + 240, 120, 38, "RETOUR", "", "#ef4444");
+
+        // --- LEADERBOARD MONDIAL ---
+        } else if (this.state === "LEADERBOARD") {
+          this.drawGlassCard(cx, cy, 620, 560, th.secondary);
+          this.ctx.textAlign = "center";
+          this.ctx.font = "28px Impact";
+          this.ctx.fillStyle = th.secondary;
+          this.ctx.fillText("🏆 CLASSEMENT MONDIAL DU NEXUS", cx, cy - 235);
+
+          this.ctx.font = "bold 12px Consolas";
+          this.ctx.fillStyle = "#94a3b8";
+          this.ctx.fillText(`JOUEUR ACTIF : ${this.playerName} ${this.isAuth ? '(Compte vérifié)' : '(Invité)'}`, cx, cy - 208);
+
+          // Tableau des scores
+          this.leaderboard.slice(0, 6).forEach((item, idx) => {
+            const rowY = cy - 165 + idx * 56;
+            const isMe = item.name === this.playerName;
+
+            this.ctx.fillStyle = isMe ? "rgba(168, 85, 247, 0.18)" : "rgba(15, 10, 28, 0.85)";
+            this.ctx.strokeStyle = isMe ? th.secondary : "rgba(255,255,255,0.08)";
+            this.ctx.lineWidth = 1;
+            this.ctx.fillRect(cx - 270, rowY, 540, 48);
+            this.ctx.strokeRect(cx - 270, rowY, 540, 48);
+
+            // Rang Médaille
+            const medals = ["🥇", "🥈", "🥉", `#4`, `#5`, `#6`];
+            this.ctx.textAlign = "left";
+            this.ctx.font = "bold 16px Consolas";
+            this.ctx.fillStyle = idx === 0 ? "#fbbf24" : (idx === 1 ? "#cbd5e1" : (idx === 2 ? "#d97706" : "#94a3b8"));
+            this.ctx.fillText(medals[idx], cx - 250, rowY + 30);
+
+            // Pseudo
+            this.ctx.font = "bold 14px Consolas";
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.fillText(item.name, cx - 190, rowY + 30);
+
+            // Score & Combo
+            this.ctx.textAlign = "right";
+            this.ctx.font = "bold 15px Impact";
+            this.ctx.fillStyle = th.primary;
+            this.ctx.fillText(`${item.score.toLocaleString()} PTS`, cx + 160, rowY + 30);
+
+            this.ctx.font = "11px Consolas";
+            this.ctx.fillStyle = "#94a3b8";
+            this.ctx.fillText(`x${item.combo}`, cx + 240, rowY + 30);
+          });
+
+          this.drawInteractiveBtn("CHANGE_NAME", cx - 120, cy + 225, 210, 44, "👤 CHANGER PROFIL", "", th.primary);
+          this.drawInteractiveBtn("BACK_MENU", cx + 120, cy + 225, 170, 44, "RETOUR", "", "#ef4444");
+
+        // --- PARAMÈTRES ---
         } else if (this.state === "SETTINGS") {
-          this.drawGlassCard(cx, cy, 540, 560, th.primary);
+          this.drawGlassCard(cx, cy, 520, 500, th.primary);
           this.ctx.textAlign = "center";
-          this.ctx.font = "32px Impact";
+          this.ctx.font = "28px Impact";
           this.ctx.fillStyle = th.primary;
-          this.ctx.fillText("⚙️ PARAMÈTRES DU NEXUS", cx, cy - 220);
+          this.ctx.fillText("⚙️ PARAMÈTRES DU NEXUS", cx, cy - 190);
 
-          this.drawInteractiveBtn("THEME_TOGGLE", cx, cy - 95, 380, 55, `🎨 THÈME : ${th.name}`, "[CLIQUE POUR CHANGER]", th.secondary);
-          this.drawInteractiveBtn("DIFF_TOGGLE", cx, cy - 15, 380, 55, `⚡ DIFFICULTÉ : ${this.difficulty}`, "[CLIQUE POUR CHANGER]", th.secondary);
-          this.drawInteractiveBtn("PARTICLES_TOGGLE", cx, cy + 65, 380, 55, `✨ PARTICULES : ${this.particlesEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR ACTIVER/DÉSACTIVER]", th.secondary);
-          this.drawInteractiveBtn("SHAKE_TOGGLE", cx, cy + 145, 380, 55, `📳 SECOUSSES D'ÉCRAN : ${this.shakeEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR ACTIVER/DÉSACTIVER]", th.secondary);
-          this.drawInteractiveBtn("BACK_MENU", cx, cy + 245, 220, 48, "RETOUR", "[OU ÉCHAP]", "#ff0055");
+          this.drawInteractiveBtn("DIFF_TOGGLE", cx, cy - 50, 360, 52, `⚡ DIFFICULTÉ : ${this.difficulty}`, "[CLIQUE POUR CHANGER]", th.secondary);
+          this.drawInteractiveBtn("PARTICLES_TOGGLE", cx, cy + 20, 360, 52, `✨ PARTICULES : ${this.particlesEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR BASCULER]", th.secondary);
+          this.drawInteractiveBtn("SHAKE_TOGGLE", cx, cy + 95, 360, 52, `📳 SECOUSSES D'ÉCRAN : ${this.shakeEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR BASCULER]", th.secondary);
+          this.drawInteractiveBtn("BACK_MENU", cx, cy + 200, 200, 44, "RETOUR", "[OU ÉCHAP]", "#ef4444");
 
+        // --- STATISTIQUES ---
         } else if (this.state === "STATS") {
-          this.drawGlassCard(cx, cy, 560, 560, th.accent);
+          this.drawGlassCard(cx, cy, 540, 520, th.accent);
           this.ctx.textAlign = "center";
-          this.ctx.font = "32px Impact";
+          this.ctx.font = "28px Impact";
           this.ctx.fillStyle = th.accent;
-          this.ctx.fillText("📊 TÉLÉMÉTRIE & RECORDS", cx, cy - 220);
+          this.ctx.fillText("📊 TÉLÉMÉTRIE & RECORDS", cx, cy - 200);
 
           const recent = this.reactionTimes.slice(-20);
           const avgReact = recent.length ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length) : 0;
@@ -950,38 +1501,38 @@
           const statsLines = [
             `MEILLEUR SCORE : ${this.highScore.toLocaleString()} PTS`,
             `PARTIES JOUÉES : ${this.totalGames}`,
-            `MAX COMBO ATTEINT : x${this.maxCombo}`,
+            `SOLDE TOTAL : ${this.voidCoins} VOID COINS`,
+            `THÈMES DÉBLOQUÉS : ${this.unlockedThemes.length} / ${ALL_THEMES.length}`,
             `TEMPS DE RÉACTION MOYEN : ${avgReact} ms`,
             `PERFECT TIMINGS : ${this.perfectCount}`,
             `POUIC SLAMS RÉUSSIS : ${this.totalPouics}`
           ];
 
-          this.ctx.font = "bold 14px Consolas";
+          this.ctx.font = "bold 13px Consolas";
           this.ctx.fillStyle = "#ffffff";
           statsLines.forEach((line, idx) => {
-            this.ctx.fillText(line, cx, cy - 145 + idx * 40);
+            this.ctx.fillText(line, cx, cy - 130 + idx * 36);
           });
 
-          this.drawInteractiveBtn("BACK_MENU", cx, cy + 240, 220, 48, "RETOUR", "[OU ÉCHAP]", th.primary);
+          this.drawInteractiveBtn("BACK_MENU", cx, cy + 215, 200, 44, "RETOUR", "[OU ÉCHAP]", th.primary);
 
+        // --- COMPTE À REBOURS ---
         } else if (this.state === "COUNTDOWN") {
           const elapsed = (performance.now() - this.stepStartTime) / 1000;
           const count = 3 - Math.floor(elapsed);
           if (count > 0) {
             this.ctx.textAlign = "center";
-            this.ctx.font = "bold 120px Impact";
+            this.ctx.font = "bold 110px Impact";
             this.ctx.fillStyle = th.primary;
-            this.ctx.shadowBlur = 30;
-            this.ctx.shadowColor = th.primary;
             this.ctx.fillText(count, cx, cy);
-            this.ctx.shadowBlur = 0;
-            this.ctx.font = "bold 18px Consolas";
+            this.ctx.font = "bold 16px Consolas";
             this.ctx.fillStyle = "#ffffff";
-            this.ctx.fillText("PREPARE YOUR REFLEXES...", cx, cy + 70);
+            this.ctx.fillText("PREPARE YOUR REFLEXES...", cx, cy + 65);
           } else {
             this.startGame();
           }
 
+        // --- EN JEU (LETTRES P-O-U-I-C & POUIC SLAM) ---
         } else if (this.state === "PLAYING_LETTERS" || this.state === "POUIC_SLAM") {
           this.timeRemaining -= dt;
           if (this.timeRemaining <= 0) {
@@ -994,7 +1545,7 @@
 
           // HUD Live
           this.ctx.textAlign = "center";
-          this.ctx.font = "26px Impact";
+          this.ctx.font = "24px Impact";
           this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
           this.ctx.fillText(`SCORE: ${this.score.toLocaleString()}`, cx - 250, 75);
 
@@ -1006,18 +1557,18 @@
           this.ctx.fillText(`COMBO: x${this.combo}  |  ${cps.toFixed(1)} CPS  |  ${avgReact} ms`, cx, 75);
 
           // Jauge Overdrive
-          const fgW = 280;
+          const fgW = 260;
           this.ctx.strokeStyle = th.secondary;
-          this.ctx.strokeRect(cx - fgW / 2, 95, fgW, 8);
+          this.ctx.strokeRect(cx - fgW / 2, 95, fgW, 7);
           this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
-          this.ctx.fillRect(cx - fgW / 2, 95, fgW * this.feverGauge, 8);
+          this.ctx.fillRect(cx - fgW / 2, 95, fgW * this.feverGauge, 7);
 
-          // Timer Circular Arc
-          const timerR = Math.min(200, this.width * 0.22);
+          // Timer Circular Arc épuré
+          const timerR = Math.min(190, this.width * 0.22);
           const ratio = Math.max(0.0, this.timeRemaining / this.timeLimit);
-          const gaugeCol = ratio > 0.4 ? th.primary : (ratio > 0.2 ? "#ffe600" : "#ff0055");
+          const gaugeCol = ratio > 0.4 ? th.primary : (ratio > 0.2 ? "#ffe600" : "#ef4444");
 
-          this.ctx.lineWidth = 6;
+          this.ctx.lineWidth = 5;
           this.ctx.strokeStyle = gaugeCol;
           this.ctx.beginPath();
           this.ctx.arc(cx, cy, timerR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ratio, false);
@@ -1026,7 +1577,7 @@
           // Orbs Disposition
           this.buttons = {};
           const n = this.sequence.length;
-          const radiusLayout = Math.min(240, this.width * 0.35);
+          const radiusLayout = Math.min(235, this.width * 0.35);
           const startAng = -Math.PI * 0.82;
           const endAng = -Math.PI * 0.18;
           const coords = [];
@@ -1037,20 +1588,20 @@
             const bx = cx + Math.cos(ang) * radiusLayout;
             const by = cy + Math.sin(ang) * (radiusLayout * 0.72) + 30;
             coords.push({ x: bx, y: by });
-            this.buttons[char] = { x: bx, y: by, r: 40 };
+            this.buttons[char] = { x: bx, y: by, r: 38 };
           }
 
-          // Laser Interconnects
+          // Faisceaux Lasers d'interconnexion
           for (let i = 0; i < coords.length - 1; i++) {
-            this.ctx.strokeStyle = this.isFever ? "#ffe600" : (i >= this.currentStep ? "#3a0f66" : th.primary);
-            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = this.isFever ? "#ffe600" : (i >= this.currentStep ? "rgba(255,255,255,0.08)" : th.primary);
+            this.ctx.lineWidth = 2.5;
             this.ctx.beginPath();
             this.ctx.moveTo(coords[i].x, coords[i].y);
             this.ctx.lineTo(coords[i + 1].x, coords[i + 1].y);
             this.ctx.stroke();
           }
 
-          // Draw Nodes
+          // Orbes P-O-U-I-C
           for (let i = 0; i < n; i++) {
             const char = this.sequence[i];
             const orb = coords[i];
@@ -1058,72 +1609,78 @@
             const isDone = (i < this.currentStep);
 
             if (isTarget) {
-              const pulseT = Math.sin(this.phase * 2.2) * 6;
+              const pulseT = Math.sin(this.phase * 2.2) * 5;
               this.ctx.strokeStyle = th.accent;
-              this.ctx.lineWidth = 2;
+              this.ctx.lineWidth = 1.5;
               this.ctx.beginPath();
-              this.ctx.arc(orb.x, orb.y, 40 + 10 + pulseT, 0, Math.PI * 2);
+              this.ctx.arc(orb.x, orb.y, 38 + 8 + pulseT, 0, Math.PI * 2);
               this.ctx.stroke();
             }
 
-            this.ctx.fillStyle = isDone ? th.primary : (isTarget ? th.card : "#06010d");
-            this.ctx.strokeStyle = isTarget ? "#ffffff" : (isDone ? th.primary : th.secondary);
+            this.ctx.fillStyle = isDone ? th.primary : (isTarget ? th.card : "#0a0614");
+            this.ctx.strokeStyle = isTarget ? "#ffffff" : (isDone ? th.primary : "rgba(255,255,255,0.15)");
             this.ctx.lineWidth = 2;
 
             this.ctx.beginPath();
-            this.ctx.arc(orb.x, orb.y, 40, 0, Math.PI * 2);
+            this.ctx.arc(orb.x, orb.y, 38, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.stroke();
 
             this.ctx.fillStyle = isDone ? "#000000" : "#ffffff";
-            this.ctx.font = "bold 28px Impact";
+            this.ctx.font = "bold 26px Impact";
             this.ctx.textAlign = "center";
             this.ctx.textBaseline = "middle";
             this.ctx.fillText(char, orb.x, orb.y);
           }
 
-          // Center Action
+          // Action Centrale
           if (this.state === "PLAYING_LETTERS") {
             const targetChar = this.sequence[this.currentStep];
-            this.ctx.font = "bold 34px Impact";
+            this.ctx.font = "bold 32px Impact";
             this.ctx.fillStyle = "#ffffff";
             this.ctx.fillText(`FRAPPE : ${targetChar}`, cx, cy);
           } else if (this.state === "POUIC_SLAM") {
-            const pulseSlam = Math.sin(this.phase * 3.0) * 8;
+            const pulseSlam = Math.sin(this.phase * 3.0) * 7;
             this.ctx.fillStyle = th.accent;
             this.ctx.strokeStyle = "#ffe600";
-            this.ctx.lineWidth = 3;
+            this.ctx.lineWidth = 2.5;
             this.ctx.beginPath();
-            this.ctx.arc(cx, cy, 75 + pulseSlam, 0, Math.PI * 2);
+            this.ctx.arc(cx, cy, 70 + pulseSlam, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.stroke();
 
             this.ctx.fillStyle = "#ffffff";
-            this.ctx.font = "bold 24px Impact";
-            this.ctx.fillText("POUIC", cx, cy - 12);
-            this.ctx.fillText("SLAM!", cx, cy + 16);
+            this.ctx.font = "bold 22px Impact";
+            this.ctx.fillText("POUIC", cx, cy - 10);
+            this.ctx.fillText("SLAM!", cx, cy + 14);
           }
 
+        // --- GAME OVER ---
         } else if (this.state === "GAMEOVER") {
           this.ctx.textAlign = "center";
-          this.ctx.font = "bold 48px Impact";
-          this.ctx.fillStyle = "#ff0055";
+          this.ctx.font = "bold 44px Impact";
+          this.ctx.fillStyle = "#ef4444";
           this.ctx.fillText("SURCHAUFFE DU SYSTÈME", cx, cy - 130);
 
-          this.ctx.font = "bold 20px Consolas";
+          this.ctx.font = "bold 18px Consolas";
           this.ctx.fillStyle = th.primary;
           this.ctx.fillText(`SCORE FINAL : ${this.score.toLocaleString()}   |   RECORD : ${this.highScore.toLocaleString()}`, cx, cy - 65);
 
           const rankStr = this.roundNum >= 14 ? "SSS VOID EMPEROR" : (this.roundNum >= 9 ? "S NEXUS MASTER" : (this.roundNum >= 5 ? "A SPEED RUNNER" : "B NOVICE"));
-          this.ctx.font = "bold 14px Consolas";
+          this.ctx.font = "bold 13px Consolas";
           this.ctx.fillStyle = "#ffe600";
-          this.ctx.fillText(`RANG ÉVALUÉ : ${rankStr} (MAX COMBO: x${this.maxCombo})`, cx, cy - 15);
+          this.ctx.fillText(`RANG ÉVALUÉ : ${rankStr} (MAX COMBO: x${this.maxCombo})`, cx, cy - 25);
 
-          this.drawInteractiveBtn("RETRY", cx, cy + 145, 300, 75, "🔄 REJOUER", "[CLIQUE OU ENTRÉE]", th.primary);
-          this.drawInteractiveBtn("MENU_BTN", cx, cy + 225, 300, 50, "🏠 MENU PRINCIPAL", "", th.secondary);
+          if (this.coinsEarnedInRun > 0) {
+            this.ctx.fillStyle = "#fbbf24";
+            this.ctx.fillText(`🪙 GAIN : +${this.coinsEarnedInRun} VOID COIN(S) (TOTAL : ${this.voidCoins})`, cx, cy + 5);
+          }
+
+          this.drawInteractiveBtn("RETRY", cx, cy + 140, 280, 68, "🔄 REJOUER", "[CLIQUE OU ENTRÉE]", th.primary);
+          this.drawInteractiveBtn("MENU_BTN", cx, cy + 215, 280, 46, "🏠 MENU PRINCIPAL", "", th.secondary);
         }
 
-        // Mouse Trail
+        // Traînée de curseur
         for (let i = this.mouseTrail.length - 1; i >= 0; i--) {
           const pt = this.mouseTrail[i];
           pt.life -= 0.08;
@@ -1131,25 +1688,25 @@
             this.mouseTrail.splice(i, 1);
           } else {
             this.ctx.fillStyle = th.primary;
-            this.ctx.globalAlpha = pt.life;
+            this.ctx.globalAlpha = pt.life * 0.7;
             this.ctx.beginPath();
-            this.ctx.arc(pt.x, pt.y, 6 * pt.life, 0, Math.PI * 2);
+            this.ctx.arc(pt.x, pt.y, 5 * pt.life, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.globalAlpha = 1.0;
           }
         }
 
-        // Bottom Helper Bar
+        // Barre d'aide
         this.ctx.textAlign = "center";
         this.ctx.font = "11px Consolas";
         this.ctx.fillStyle = "#64748b";
-        this.ctx.fillText("[P][O][U][I][C] Clavier/Souris/Tactile  |  [ESPACE] Pouic Slam  |  [T] Thèmes  |  [M] Muet  •  by @zanioxx_off", this.width / 2, this.height - 18);
+        this.ctx.fillText("[P][O][U][I][C] Clavier/Souris/Tactile  |  [ESPACE] Pouic Slam  |  [M] Muet  •  by @zanioxx_off", this.width / 2, this.height - 15);
 
         requestAnimationFrame((t) => this.loop(t));
       }
     }
 
-    // Initialisation
+    // Initialisation du jeu
     const game = new VoidGame();
     document.getElementById('init-btn').addEventListener('click', () => {
       game.audio.init();

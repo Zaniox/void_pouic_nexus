@@ -1,6 +1,6 @@
-# ⚡ VOID POUIC NEXUS : TRANSCENDENCE EDITION
+# ⚡ VOID POUIC NEXUS : TRANSCENDENCE 2.0
 
-> **Jeu d'arcade cyberpunk rythmé et ultra-réactif.**  
+> **Jeu d'arcade cyberpunk rythmé avec Classement Mondial en ligne, Économie de Void Coins et Boutique de 10 Thèmes.**  
 > *Architecture par @zanioxx_off*
 
 ---
@@ -10,30 +10,29 @@
 
 ---
 
-## 🌌 Aperçu
+## 🌌 Nouveautés Majeures de la Version 2.0
 
-**VOID POUIC NEXUS : TRANSCENDENCE** est un jeu réflexe haute cadence combinant synchronisation visuelle, effets de distorsion néon, visualiseur audio temps réel et synthèse sonore spatialisée.
-
-![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%2B-blue?style=for-the-badge&logo=python)
-![Web Edition](https://img.shields.io/badge/Web_Edition-HTML5%20%7C%20WebAudio-brightgreen?style=for-the-badge)
-![Dependencies](https://img.shields.io/badge/Dependencies-0%20(Zero%20Dep)-purple?style=for-the-badge)
-
----
-
-## ✨ Fonctionnalités Majeures
-
-- 🌐 **Version Web Instantanée** : Jouable sur n'importe quel navigateur (PC, Mobile, Tablette).
-- 🎧 **Moteur Audio Spatialisé Stéréo** : Synthèse d'ondes procédurales (onde Pouic élastique, sub-bass slam, résonance nodale).
-- 🎨 **4 Thèmes Cyberpunk Glassmorphism** :
-  - *VOID AMETHYST*
-  - *CYBER ICE*
-  - *SOLAR FLARE*
-  - *MATRIX NEON*
-- ⚡ **Système de Précision & Overdrive** :
-  - Évaluations : `PERFECT!`, `GREAT!`, `GOOD`.
-  - Mode Fever Overdrive (Multiplicateur de score x2).
-  - Étape centrale : **POUIC SLAM** destructeur.
-- 📊 **Télémétrie & Statistiques en direct** : Graphique d'historique de réaction (ms), compteur CPS, rangs de maîtrise (Novice à Void Emperor).
+- 🏆 **Classement Mondial en Ligne (Leaderboard)** :
+  - Connexion optionnelle avec Google ou saisie directe de votre pseudo.
+  - Enregistrement en direct des scores, combos et rangs dans le Top Mondial.
+- 🪙 **Système d'Économie VOID COINS** :
+  - Gagnez **1 Void Coin tous les 100 000 points** de score en partie.
+  - Économie persistante sauvegardée automatiquement.
+- 🛍️ **Boutique de 10 Thèmes Cyberpunk** :
+  - `VOID AMETHYST` (Thème de départ débloqué)
+  - `CYBER ICE` (5 🪙)
+  - `MATRIX CODE` (10 🪙)
+  - `SOLAR FLARE` (15 🪙)
+  - `BLOOD MOON` (25 🪙)
+  - `SAKURA VAPOR` (35 🪙)
+  - `SYNTHWAVE 84` (50 🪙)
+  - `QUANTUM GLITCH` (75 🪙)
+  - `DARK MATTER` (100 🪙)
+  - `HYPER GOLD` (150 🪙)
+  - `CELESTIAL DIVINITY` (250 🪙)
+- 🎨 **Interface Adoucie & Glassmorphism Épuré** :
+  - Néons retravaillés pour être doux et agréables aux yeux.
+  - Meilleure lisibilité des textes et HUD équilibré.
 
 ---
 
@@ -43,19 +42,11 @@
 | :--- | :--- | :--- |
 | **Séquence P-O-U-I-C** | Touches <kbd>P</kbd> <kbd>O</kbd> <kbd>U</kbd> <kbd>I</kbd> <kbd>C</kbd> | Clic / Tap sur les orbes |
 | **POUIC SLAM** | <kbd>ESPACE</kbd> ou <kbd>ENTRÉE</kbd> ou <kbd>P</kbd> | Clic / Tap sur le réacteur central |
-| **Changer de Thème** | <kbd>T</kbd> | Via Paramètres |
-| **Ajuster le Volume** | <kbd>+</kbd> / <kbd>-</kbd> | — |
+| **Boutique de Thèmes** | <kbd>B</kbd> | Bouton Boutique dans le menu |
+| **Classement Mondial** | <kbd>L</kbd> | Bouton Classement dans le menu |
+| **Profil / Pseudo** | — | Bouton Profil en haut à droite |
 | **Couper le Son** | <kbd>M</kbd> | — |
-| **Plein Écran** | <kbd>F11</kbd> | — |
 | **Retour / Menu** | <kbd>ÉCHAP</kbd> | — |
-
----
-
-## 🚀 Lancer en Local (Python)
-
-```bash
-python main.py
-```
 
 ---
 
