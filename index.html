@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VOID POUIC NEXUS : TRANSCENDENCE 3.5 — OFFICIAL EDITION</title>
+  <title>VOID POUIC NEXUS : TRANSCENDENCE 4.0 — CHAOS & EVENTS</title>
   
   <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -79,8 +79,8 @@
       box-shadow: 0 6px 28px rgba(255, 0, 127, 0.5);
     }
 
-    /* Modals */
-    #auth-modal, #admin-modal {
+    /* Modals généraux */
+    #auth-modal, #admin-modal, #broadcast-modal {
       position: fixed;
       inset: 0;
       background: rgba(4, 2, 9, 0.88);
@@ -97,7 +97,7 @@
       border-radius: 12px;
       padding: 28px;
       width: 90%;
-      max-width: 480px;
+      max-width: 500px;
       text-align: center;
       max-height: 90vh;
       overflow-y: auto;
@@ -183,7 +183,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin: 14px 0;
+      margin: 12px 0;
     }
     .admin-btn {
       padding: 9px;
@@ -209,6 +209,23 @@
       color: #fff;
       margin-bottom: 8px;
     }
+
+    /* Popup Holographique d'Annonce */
+    .broadcast-box {
+      background: linear-gradient(135deg, #1f0310, #0d061c);
+      border: 2px solid #ff0055;
+      box-shadow: 0 0 35px rgba(255, 0, 85, 0.5);
+      border-radius: 14px;
+      padding: 32px;
+      max-width: 520px;
+      width: 90%;
+      text-align: center;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -216,8 +233,23 @@
   <!-- Overlay Audio d'initialisation -->
   <div id="audio-overlay">
     <div class="overlay-title">⚡ VOID POUIC NEXUS ⚡</div>
-    <div class="overlay-subtitle">TRANSCENDENCE 3.5 // BY @ZANIOXX_OFF</div>
+    <div class="overlay-subtitle">TRANSCENDENCE 4.0 // BY @ZANIOXX_OFF</div>
     <button class="start-btn" id="init-btn">INITIALISER LE SYSTÈME</button>
+  </div>
+
+  <!-- Popup Holographique d'Annonce Mondiale -->
+  <div id="broadcast-modal">
+    <div class="broadcast-box">
+      <div style="font-size: 2rem; margin-bottom: 5px;">🚨</div>
+      <h2 style="color: #ff0055; font-family: 'Impact', sans-serif; font-size: 1.8rem; letter-spacing: 1px;">ANNONCE OFFICIELLE DU CRÉATEUR</h2>
+      <div style="font-size: 0.8rem; color: #fbbf24; margin-bottom: 15px; font-weight: bold;">👑 DIFFUSION EN DIRECT PAR @ZANIOXX_OFF (OWNER)</div>
+      
+      <div id="broadcast-content-txt" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); padding: 16px; border-radius: 8px; font-size: 1rem; color: #ffffff; line-height: 1.5; margin-bottom: 20px; text-align: left;">
+        Message d'alerte...
+      </div>
+
+      <button class="start-btn" id="close-broadcast-btn" style="width: 100%; font-size: 1.1rem; padding: 12px;">REÇU & COMPRIS ⚡</button>
+    </div>
   </div>
 
   <!-- Modal Authentification Google ➔ Choix du Pseudo -->
@@ -243,7 +275,7 @@
       <!-- Étape 2 : Choix du Pseudo -->
       <div id="auth-step-2" style="display: none;">
         <span class="step-badge" style="background:#22c55e;">ÉTAPE 2 / 2 : CHOISISSEZ VOTRE PSEUDO</span>
-        <p style="color:#a7f3d0;">Compte lié : <strong id="linked-email-txt">...</strong></p>
+        <p style="color:#a7f3d0;">Compte validé : <strong id="linked-email-txt">...</strong></p>
 
         <input type="text" id="pseudo-input" class="input-field" placeholder="Entrez votre Pseudo en jeu..." maxlength="15" />
 
@@ -265,6 +297,17 @@
       <h2 style="color: #fbbf24;">👑 SUPER-PANNEAU STAFF & CRÉATEUR</h2>
       <p style="color: #fde047;">Accès Maître réservé à <strong style="color:#fff;">maxiimenax05@gmail.com</strong></p>
 
+      <!-- Événements Mondiaux Staff -->
+      <div style="background: rgba(239, 68, 68, 0.15); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(239, 68, 68, 0.4);">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #f87171; margin-bottom: 6px;">🌪️ DÉCLENCHER UN ÉVÉNEMENT MONDIAL EN DIRECT</div>
+        <div class="admin-grid" style="margin: 0;">
+          <button class="admin-btn" id="adm-trigger-purge" style="color:#ef4444; border-color:#ef4444;">🩸 LA PURGE DU VOID</button>
+          <button class="admin-btn" id="adm-trigger-invert" style="color:#a855f7; border-color:#a855f7;">🔄 MONDE À L'ENVERS</button>
+          <button class="admin-btn" id="adm-trigger-supernova" style="color:#fbbf24; border-color:#fbbf24;">⚡ SUPERNOVA (x5 PTS)</button>
+          <button class="admin-btn" id="adm-trigger-freeze" style="color:#38bdf8; border-color:#38bdf8;">🧊 ZÉRO ABSOLU</button>
+        </div>
+      </div>
+
       <!-- Section Void Coins -->
       <div style="background: rgba(251, 191, 36, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(251, 191, 36, 0.3);">
         <div style="font-size: 0.8rem; font-weight: bold; color: #fbbf24; margin-bottom: 6px;">🪙 AJOUTER DES VOID COINS</div>
@@ -283,15 +326,15 @@
       <div class="admin-grid">
         <button class="admin-btn" id="adm-unlock-all">✨ DÉBLOQUER TOUT</button>
         <button class="admin-btn" id="adm-toggle-god">🛡️ GOD MODE : <span id="god-status">OFF</span></button>
-        <button class="admin-btn" id="adm-set-round">⚡ CYCLE DE DÉPART : <span id="round-start-txt">1</span></button>
+        <button class="admin-btn" id="adm-set-round">⚡ CYCLE DÉPART : <span id="round-start-txt">1</span></button>
         <button class="admin-btn" id="adm-time-speed">⏱️ VITESSE : <span id="speed-txt">x1.0</span></button>
         <button class="admin-btn" id="adm-fake-score">🏆 TOP 1 PERSO (2.5M)</button>
-        <button class="admin-btn" id="adm-delete-user" style="color:#f87171; border-color:#f87171;">🗑️ SUPPRIMER UN JOUEUR</button>
+        <button class="admin-btn" id="adm-delete-user" style="color:#f87171; border-color:#f87171;">🗑️ SUPPRIMER JOUEUR</button>
       </div>
 
-      <!-- Annonce Mondiale & Reset -->
+      <!-- Annonce Mondiale Popup & Reset -->
       <div class="btn-row" style="margin-bottom: 10px;">
-        <button class="admin-btn" id="adm-broadcast" style="flex:1;">📢 ANNONCE MONDIALE</button>
+        <button class="admin-btn" id="adm-broadcast" style="flex:1;">📢 POPUP ANNONCE MONDIALE</button>
         <button class="admin-btn" id="adm-reset-leaderboard" style="color:#ef4444; border-color:#ef4444; flex:1;">💣 RESET LEADERBOARD</button>
       </div>
 
@@ -303,24 +346,24 @@
 
   <script>
     // =====================================================================
-    // 1. DÉFINITION DES 11 THÈMES
+    // 1. DÉFINITION DES 11 THÈMES AVEC LOGOS / BADGES HD
     // =====================================================================
     const ALL_THEMES = [
-      { id: "amethyst", name: "VOID AMETHYST", price: 0, desc: "Nébuleuse cosmique violette", primary: "#00f0ff", accent: "#ff007f", secondary: "#a855f7", bg_glow: "#16022c", stars: "#d8b4fe", card: "#0c0618", synth: "sine_harmonic" },
-      { id: "cyber_ice", name: "CYBER ICE", price: 5, desc: "Blizzard glacial & cristal pur", primary: "#38bdf8", accent: "#00f7ff", secondary: "#818cf8", bg_glow: "#02172b", stars: "#bae6fd", card: "#031020", synth: "crystal_ice" },
-      { id: "matrix_neon", name: "MATRIX CODE", price: 10, desc: "Pluie de code binaire vert 8-bit", primary: "#22c55e", accent: "#00ffcc", secondary: "#4ade80", bg_glow: "#021c0c", stars: "#bbf7d0", card: "#02140a", synth: "chiptune_8bit" },
-      { id: "solar_flare", name: "SOLAR FLARE", price: 15, desc: "Éruption stellaire & lave en fusion", primary: "#fbbf24", accent: "#ff0055", secondary: "#f97316", bg_glow: "#26040a", stars: "#fef08a", card: "#190409", synth: "warm_saw" },
-      { id: "blood_moon", name: "BLOOD MOON", price: 25, desc: "Éclipse carmin & orages sombres", primary: "#ef4444", accent: "#b91c1c", secondary: "#f87171", bg_glow: "#2b0303", stars: "#fca5a5", card: "#180303", synth: "metallic_dark" },
-      { id: "sakura_vapor", name: "SAKURA VAPOR", price: 35, desc: "Pétales de cerisiers néo-Tokyo", primary: "#f472b6", accent: "#38bdf8", secondary: "#c084fc", bg_glow: "#240a2b", stars: "#fbcfe8", card: "#16071c", synth: "lofi_bell" },
-      { id: "synthwave_84", name: "SYNTHWAVE 84", price: 50, desc: "Grille 3D & soleil rétro analogique", primary: "#ec4899", accent: "#f59e0b", secondary: "#8b5cf6", bg_glow: "#290425", stars: "#fde047", card: "#170216", synth: "retro_brass" },
-      { id: "quantum_glitch", name: "QUANTUM GLITCH", price: 75, desc: "Distorsions holographiques cyber", primary: "#06b6d4", accent: "#ec4899", secondary: "#eab308", bg_glow: "#051f2d", stars: "#67e8f9", card: "#03141f", synth: "bitcrush_glitch" },
-      { id: "dark_matter", name: "DARK MATTER", price: 100, desc: "Trou noir & vortex gravitationnel", primary: "#94a3b8", accent: "#64748b", secondary: "#cbd5e1", bg_glow: "#0f172a", stars: "#e2e8f0", card: "#090d16", synth: "sub_drone" },
-      { id: "hyper_gold", name: "HYPER GOLD", price: 150, desc: "Rayons dorés & carillons impériaux", primary: "#facc15", accent: "#ca8a04", secondary: "#fde047", bg_glow: "#2d1f03", stars: "#fef9c3", card: "#181102", synth: "royal_brass" },
-      { id: "celestial_divinity", name: "CELESTIAL DIVINITY", price: 250, desc: "Halos angéliques & chœurs sacrés", primary: "#e0e7ff", accent: "#c084fc", secondary: "#38bdf8", bg_glow: "#1a1638", stars: "#ffffff", card: "#0d0b21", synth: "celestial_choir" }
+      { id: "amethyst", icon: "🔮", name: "VOID AMETHYST", price: 0, desc: "Nébuleuse cosmique violette", primary: "#00f0ff", accent: "#ff007f", secondary: "#a855f7", bg_glow: "#16022c", stars: "#d8b4fe", card: "#0c0618", synth: "sine_harmonic" },
+      { id: "cyber_ice", icon: "❄️", name: "CYBER ICE", price: 5, desc: "Blizzard glacial & cristal pur", primary: "#38bdf8", accent: "#00f7ff", secondary: "#818cf8", bg_glow: "#02172b", stars: "#bae6fd", card: "#031020", synth: "crystal_ice" },
+      { id: "matrix_neon", icon: "📟", name: "MATRIX CODE", price: 10, desc: "Pluie de code binaire vert 8-bit", primary: "#22c55e", accent: "#00ffcc", secondary: "#4ade80", bg_glow: "#021c0c", stars: "#bbf7d0", card: "#02140a", synth: "chiptune_8bit" },
+      { id: "solar_flare", icon: "☀️", name: "SOLAR FLARE", price: 15, desc: "Éruption stellaire & lave en fusion", primary: "#fbbf24", accent: "#ff0055", secondary: "#f97316", bg_glow: "#26040a", stars: "#fef08a", card: "#190409", synth: "warm_saw" },
+      { id: "blood_moon", icon: "🩸", name: "BLOOD MOON", price: 25, desc: "Éclipse carmin & orages sombres", primary: "#ef4444", accent: "#b91c1c", secondary: "#f87171", bg_glow: "#2b0303", stars: "#fca5a5", card: "#180303", synth: "metallic_dark" },
+      { id: "sakura_vapor", icon: "🌸", name: "SAKURA VAPOR", price: 35, desc: "Pétales de cerisiers néo-Tokyo", primary: "#f472b6", accent: "#38bdf8", secondary: "#c084fc", bg_glow: "#240a2b", stars: "#fbcfe8", card: "#16071c", synth: "lofi_bell" },
+      { id: "synthwave_84", icon: "🕶️", name: "SYNTHWAVE 84", price: 50, desc: "Grille 3D & soleil rétro analogique", primary: "#ec4899", accent: "#f59e0b", secondary: "#8b5cf6", bg_glow: "#290425", stars: "#fde047", card: "#170216", synth: "retro_brass" },
+      { id: "quantum_glitch", icon: "⚡", name: "QUANTUM GLITCH", price: 75, desc: "Distorsions holographiques cyber", primary: "#06b6d4", accent: "#ec4899", secondary: "#eab308", bg_glow: "#051f2d", stars: "#67e8f9", card: "#03141f", synth: "bitcrush_glitch" },
+      { id: "dark_matter", icon: "🕳️", name: "DARK MATTER", price: 100, desc: "Trou noir & vortex gravitationnel", primary: "#94a3b8", accent: "#64748b", secondary: "#cbd5e1", bg_glow: "#0f172a", stars: "#e2e8f0", card: "#090d16", synth: "sub_drone" },
+      { id: "hyper_gold", icon: "👑", name: "HYPER GOLD", price: 150, desc: "Rayons dorés & carillons impériaux", primary: "#facc15", accent: "#ca8a04", secondary: "#fde047", bg_glow: "#2d1f03", stars: "#fef9c3", card: "#181102", synth: "royal_brass" },
+      { id: "celestial_divinity", icon: "🪽", name: "CELESTIAL DIVINITY", price: 250, desc: "Halos angéliques & chœurs sacrés", primary: "#e0e7ff", accent: "#c084fc", secondary: "#38bdf8", bg_glow: "#1a1638", stars: "#ffffff", card: "#0d0b21", synth: "celestial_choir" }
     ];
 
     // =====================================================================
-    // 2. MOTEUR AUDIO AVEC 11 PROFILS SONORES PROCÉDURAUX
+    // 2. MOTEUR AUDIO AVEC 11 PROFILS SONORES PROCÉDURAUX + EFFETS D'ÉVÉNEMENTS
     // =====================================================================
     class ProceduralAudioMatrix {
       constructor() {
@@ -367,6 +410,23 @@
 
         const theme = ALL_THEMES.find(t => t.id === themeId) || ALL_THEMES[0];
         const synthType = theme.synth;
+
+        // --- SIRÈNE D'ÉVÉNEMENT (PURGE / ALARME) ---
+        if (name === 'siren') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.linearRampToValueAtTime(880, now + 0.3);
+          osc.frequency.linearRampToValueAtTime(440, now + 0.6);
+          gain.gain.setValueAtTime(0.7, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.75);
+          return;
+        }
 
         if (name.startsWith('note_')) {
           const idx = parseInt(name.split('_')[1], 10) || 0;
@@ -718,12 +778,12 @@
     }
 
     // =====================================================================
-    // 4. SERVICE CLOUD LEADERBOARD SYNCHRONISÉ
+    // 4. SERVICE CLOUD LEADERBOARD SYNCHRONISÉ MONDIALEMENT
     // =====================================================================
     class CloudLeaderboardService {
       constructor() {
-        this.cloudUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_leaderboard_v35";
-        this.localKey = "global_leaderboard_v35";
+        this.cloudUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_leaderboard_v40";
+        this.localKey = "global_leaderboard_v40";
       }
 
       async fetchScores() {
@@ -743,15 +803,16 @@
           try { return JSON.parse(cached); } catch (e) {}
         }
         return [
-          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1650000, combo: 72, rank: "SSS VOID EMPEROR", isOwner: true },
-          { name: "⚡ QUANTUM_DEV", email: "dev***@gmail.com", score: 1120000, combo: 52, rank: "SSS VOID EMPEROR", isOwner: false },
-          { name: "CYBER_NEXUS", email: "cyber***@gmail.com", score: 850000, combo: 41, rank: "S NEXUS MASTER", isOwner: false }
+          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1850000, combo: 84, rank: "SSS VOID EMPEROR", isOwner: true },
+          { name: "⚡ QUANTUM_DEV", email: "dev***@gmail.com", score: 1320000, combo: 61, rank: "SSS VOID EMPEROR", isOwner: false },
+          { name: "CYBER_NEXUS", email: "cyber***@gmail.com", score: 980000, combo: 48, rank: "S NEXUS MASTER", isOwner: false },
+          { name: "NEO_RUNNER", email: "neo***@gmail.com", score: 740000, combo: 37, rank: "S NEXUS MASTER", isOwner: false },
+          { name: "GLITCH_99", email: "glitch***@gmail.com", score: 520000, combo: 28, rank: "A SPEED RUNNER", isOwner: false }
         ];
       }
 
       async saveScore(newEntry) {
         const scores = await this.fetchScores();
-        // Remplacement ou ajout
         const existingIdx = scores.findIndex(s => s.name === newEntry.name);
         if (existingIdx !== -1) {
           if (newEntry.score > scores[existingIdx].score) {
@@ -777,7 +838,7 @@
 
       async deletePlayer(pseudo) {
         let scores = await this.fetchScores();
-        scores = scores.filter(s => s.name.toLowerCase() !== pseudo.toLowerCase());
+        scores = scores.filter(s => !s.name.toLowerCase().includes(pseudo.toLowerCase()));
         localStorage.setItem(this.localKey, JSON.stringify(scores));
         try {
           await fetch(this.cloudUrl, {
@@ -791,7 +852,7 @@
 
       async clearAllScores() {
         const defaultScores = [
-          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1650000, combo: 72, rank: "SSS VOID EMPEROR", isOwner: true }
+          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1850000, combo: 84, rank: "SSS VOID EMPEROR", isOwner: true }
         ];
         localStorage.setItem(this.localKey, JSON.stringify(defaultScores));
         try {
@@ -806,7 +867,7 @@
     }
 
     // =====================================================================
-    // 5. APPLICATION PRINCIPALE : VOID POUIC NEXUS 3.5
+    // 5. APPLICATION PRINCIPALE : VOID POUIC NEXUS 4.0
     // =====================================================================
     class VoidGame {
       constructor() {
@@ -821,24 +882,28 @@
         this.resize();
         window.addEventListener('resize', () => this.resize());
 
-        // Configuration Owner
+        // Configuration Owner & Staff
         this.ownerEmails = ["maxiimenax05@gmail.com", "maximenax05@gmail.com"];
         this.isGodMode = false;
         this.timeSpeedMult = 1.0;
         this.startRoundSetting = 1;
-        this.globalBroadcast = localStorage.getItem('global_broadcast') || "";
 
-        // Sauvegarde & Économie persistante
+        // Système d'Événements Mondiaux en cours
+        this.activeEvent = null; // 'PURGE', 'INVERTED', 'SUPERNOVA', 'FROZEN'
+        this.eventTimer = 0;
+        this.purgeOrbs = [];
+
+        // Sauvegarde persistante
         this.voidCoins = parseInt(localStorage.getItem('void_coins'), 10) || 0;
         this.unlockedThemes = JSON.parse(localStorage.getItem('unlocked_themes') || '["amethyst"]');
         this.activeThemeId = localStorage.getItem('active_theme_id') || 'amethyst';
 
-        // Profil joueur & Détection Owner
+        // Profil & Rôle Owner
         this.playerEmail = localStorage.getItem('player_email') || '';
         this.playerName = localStorage.getItem('player_pseudo') || 'GUEST_' + Math.floor(1000 + Math.random() * 9000);
         this.checkOwnerStatus();
 
-        // Scores et records
+        // Leaderboard mondial
         this.highScore = parseInt(localStorage.getItem('high_score'), 10) || 0;
         this.totalGames = parseInt(localStorage.getItem('total_games'), 10) || 0;
         this.leaderboard = [];
@@ -849,7 +914,7 @@
         this.particlesEnabled = true;
         this.shakeEnabled = true;
 
-        // États du jeu : 'MENU', 'SHOP', 'LEADERBOARD', 'SETTINGS', 'STATS', 'COUNTDOWN', 'PLAYING_LETTERS', 'POUIC_SLAM', 'GAMEOVER'
+        // États : 'MENU', 'SHOP', 'LEADERBOARD', 'SETTINGS', 'STATS', 'COUNTDOWN', 'PLAYING_LETTERS', 'POUIC_SLAM', 'GAMEOVER'
         this.state = "MENU";
         this.sequence = ['P', 'O', 'U', 'I', 'C'];
         this.pans = [-0.8, -0.4, 0.0, 0.4, 0.8];
@@ -888,6 +953,7 @@
 
         this.bindEvents();
         this.bindModals();
+        this.checkPendingBroadcast();
         requestAnimationFrame((t) => this.loop(t));
       }
 
@@ -954,6 +1020,51 @@
         });
       }
 
+      // --- DÉCLENCHEMENT D'ÉVÉNEMENTS MONDIAUX ---
+      triggerEvent(type) {
+        this.activeEvent = type;
+        this.eventTimer = type === 'PURGE' ? 8.0 : 12.0;
+        this.audio.play('siren');
+        this.triggerShake(20);
+
+        if (type === 'PURGE') {
+          this.purgeOrbs = [];
+          for (let i = 0; i < 18; i++) {
+            this.purgeOrbs.push({
+              x: 80 + Math.random() * (this.width - 160),
+              y: 100 + Math.random() * (this.height - 200),
+              r: 28 + Math.random() * 14,
+              isCoin: Math.random() < 0.45,
+              color: Math.random() < 0.45 ? "#fbbf24" : "#ef4444"
+            });
+          }
+          this.addFloatingText(this.width / 2, this.height / 2, "🩸 LA PURGE DU VOID : CLIQUEZ PARTOUT ! 🩸", "#ef4444", 28);
+        } else if (type === 'INVERTED') {
+          this.sequence = ['C', 'I', 'U', 'O', 'P'];
+          this.addFloatingText(this.width / 2, this.height / 2, "🔄 MONDE À L'ENVERS : C-I-U-O-P (x3 PTS) !", "#a855f7", 28);
+        } else if (type === 'SUPERNOVA') {
+          this.addFloatingText(this.width / 2, this.height / 2, "⚡ SUPERNOVA OVERDRIVE (x5 POINTS) !", "#fbbf24", 28);
+        } else if (type === 'FROZEN') {
+          this.addFloatingText(this.width / 2, this.height / 2, "🧊 ZÉRO ABSOLU : GEL TEMPOREL BULLET-TIME !", "#38bdf8", 28);
+        }
+      }
+
+      checkPendingBroadcast() {
+        const lastSeen = localStorage.getItem('last_seen_broadcast');
+        const activeMsg = localStorage.getItem('global_broadcast_msg');
+        if (activeMsg && activeMsg !== lastSeen) {
+          document.getElementById('broadcast-content-txt').textContent = activeMsg;
+          document.getElementById('broadcast-modal').style.display = 'flex';
+          this.audio.play('siren');
+        }
+      }
+
+      showBroadcastModal(msg) {
+        document.getElementById('broadcast-content-txt').textContent = msg;
+        document.getElementById('broadcast-modal').style.display = 'flex';
+        this.audio.play('siren');
+      }
+
       bindModals() {
         const authModal = document.getElementById('auth-modal');
         const step1 = document.getElementById('auth-step-1');
@@ -967,7 +1078,15 @@
         const backStep1Btn = document.getElementById('back-step1-btn');
         const closeAuthBtn = document.getElementById('close-auth-btn');
 
-        // Passage à l'étape 2 (Pseudo)
+        // Broadcast popup
+        const broadcastModal = document.getElementById('broadcast-modal');
+        const closeBroadcastBtn = document.getElementById('close-broadcast-btn');
+        closeBroadcastBtn.addEventListener('click', () => {
+          localStorage.setItem('last_seen_broadcast', document.getElementById('broadcast-content-txt').textContent);
+          this.audio.play('ui_click');
+          broadcastModal.style.display = 'none';
+        });
+
         const proceedToStep2 = (email) => {
           this.playerEmail = email.trim();
           this.checkOwnerStatus();
@@ -981,7 +1100,6 @@
         confirmEmailBtn.addEventListener('click', () => {
           const val = manualEmailInput.value.trim();
           if (val === '7777') {
-            // PIN Override Créateur
             localStorage.setItem('is_owner_override', 'true');
             proceedToStep2("maxiimenax05@gmail.com");
             return;
@@ -1007,7 +1125,7 @@
             this.saveData();
             this.audio.play('ui_click');
             authModal.style.display = 'none';
-            alert(`✅ Profil validé avec succès !\nEmail: ${this.playerEmail}\nPseudo: ${this.playerName}`);
+            alert(`✅ Compte et Pseudo enregistrés avec succès !\nEmail: ${this.playerEmail}\nPseudo: ${this.playerName}`);
           }
         });
 
@@ -1021,7 +1139,7 @@
           authModal.style.display = 'none';
         });
 
-        // Modal Admin / Staff
+        // Modal Admin
         const adminModal = document.getElementById('admin-modal');
         const closeAdminBtn = document.getElementById('close-admin-btn');
         const c100 = document.getElementById('adm-c100');
@@ -1037,6 +1155,24 @@
         const deleteUserBtn = document.getElementById('adm-delete-user');
         const broadcastBtn = document.getElementById('adm-broadcast');
         const resetLbBtn = document.getElementById('adm-reset-leaderboard');
+
+        // Boutons Événements Staff
+        document.getElementById('adm-trigger-purge').addEventListener('click', () => {
+          adminModal.style.display = 'none';
+          this.triggerEvent('PURGE');
+        });
+        document.getElementById('adm-trigger-invert').addEventListener('click', () => {
+          adminModal.style.display = 'none';
+          this.triggerEvent('INVERTED');
+        });
+        document.getElementById('adm-trigger-supernova').addEventListener('click', () => {
+          adminModal.style.display = 'none';
+          this.triggerEvent('SUPERNOVA');
+        });
+        document.getElementById('adm-trigger-freeze').addEventListener('click', () => {
+          adminModal.style.display = 'none';
+          this.triggerEvent('FROZEN');
+        });
 
         c100.addEventListener('click', () => { this.voidCoins += 100; this.saveData(); this.audio.play('coin'); alert("🪙 +100 Void Coins !"); });
         c500.addEventListener('click', () => { this.voidCoins += 500; this.saveData(); this.audio.play('coin'); alert("🪙 +500 Void Coins !"); });
@@ -1099,20 +1235,20 @@
         });
 
         deleteUserBtn.addEventListener('click', async () => {
-          const target = prompt("Entrez le pseudo exact du joueur à retirer du Leaderboard :");
+          const target = prompt("Entrez le pseudo du joueur à retirer du Leaderboard :");
           if (target) {
             this.leaderboard = await this.cloudLeaderboard.deletePlayer(target);
             this.audio.play('slam');
-            alert(`Joueur "${target}" supprimé du Leaderboard.`);
+            alert(`Joueur "${target}" supprimé.`);
           }
         });
 
         broadcastBtn.addEventListener('click', () => {
-          const msg = prompt("Message d'annonce mondiale en jeu :", this.globalBroadcast);
-          if (msg !== null) {
-            this.globalBroadcast = msg.trim();
-            localStorage.setItem('global_broadcast', this.globalBroadcast);
-            this.audio.play('perfect');
+          const msg = prompt("Message du Popup d'Annonce Mondiale :");
+          if (msg && msg.trim()) {
+            localStorage.setItem('global_broadcast_msg', msg.trim());
+            adminModal.style.display = 'none';
+            this.showBroadcastModal(msg.trim());
           }
         });
 
@@ -1212,6 +1348,29 @@
         const cx = this.width / 2;
         const cy = this.height / 2;
         this.clicksHistory.push(performance.now());
+
+        // Clic sur orbes de Purge active
+        if (this.activeEvent === 'PURGE' && this.purgeOrbs.length > 0) {
+          for (let i = this.purgeOrbs.length - 1; i >= 0; i--) {
+            const orb = this.purgeOrbs[i];
+            if (Math.hypot(mx - orb.x, my - orb.y) <= orb.r + 15) {
+              this.purgeOrbs.splice(i, 1);
+              this.spawnBurst(orb.x, orb.y, orb.color, 25);
+              this.score += 2500;
+              if (orb.isCoin) {
+                this.voidCoins++;
+                this.coinsEarnedInRun++;
+                this.saveData();
+                this.audio.play('coin');
+                this.addFloatingText(orb.x, orb.y, "🪙 +1 VOID COIN !", "#fbbf24", 22);
+              } else {
+                this.audio.play('slam');
+                this.addFloatingText(orb.x, orb.y, "+2500 PTS", "#ef4444", 20);
+              }
+              return;
+            }
+          }
+        }
 
         if (mx >= this.width - 240 && mx <= this.width - 20 && my >= 15 && my <= 48) {
           this.audio.play('ui_click');
@@ -1365,13 +1524,18 @@
         this.totalGames++;
         this.feverGauge = 0.0;
         this.isFever = false;
+        this.sequence = this.activeEvent === 'INVERTED' ? ['C', 'I', 'U', 'O', 'P'] : ['P', 'O', 'U', 'I', 'C'];
 
         const baseLimits = { "STANDARD": 2.4, "HYPER": 1.7, "VOID_GOD": 1.2 };
         const base = baseLimits[this.difficulty] || 2.4;
         const accelFactors = { "STANDARD": 0.88, "HYPER": 0.84, "VOID_GOD": 0.80 };
         const factor = accelFactors[this.difficulty] || 0.88;
 
-        this.timeLimit = (Math.max(0.38, base * Math.pow(factor, this.roundNum - 1))) * this.timeSpeedMult;
+        let timeMult = this.timeSpeedMult;
+        if (this.activeEvent === 'FROZEN') timeMult *= 1.8;
+        if (this.activeEvent === 'SUPERNOVA') timeMult *= 0.6;
+
+        this.timeLimit = (Math.max(0.38, base * Math.pow(factor, this.roundNum - 1))) * timeMult;
         this.timeRemaining = this.timeLimit;
         this.stepStartTime = performance.now();
 
@@ -1416,8 +1580,12 @@
           this.combo++;
           if (this.combo > this.maxCombo) this.maxCombo = this.combo;
 
+          let eventMult = 1.0;
+          if (this.activeEvent === 'INVERTED') eventMult = 3.0;
+          if (this.activeEvent === 'SUPERNOVA') eventMult = 5.0;
+
           const feverMult = this.isFever ? 2.0 : 1.0;
-          const pts = Math.round(100 * this.roundNum * mult * feverMult);
+          const pts = Math.round(100 * this.roundNum * mult * feverMult * eventMult);
           
           const prevScore = this.score;
           this.score += pts;
@@ -1462,7 +1630,11 @@
         const th = this.getTheme();
         this.totalPouics++;
 
-        const slamPts = 600 * this.combo * (this.isFever ? 2 : 1);
+        let eventMult = 1.0;
+        if (this.activeEvent === 'INVERTED') eventMult = 3.0;
+        if (this.activeEvent === 'SUPERNOVA') eventMult = 5.0;
+
+        const slamPts = Math.round(600 * this.combo * (this.isFever ? 2 : 1) * eventMult);
         const prevScore = this.score;
         this.score += slamPts;
 
@@ -1583,6 +1755,16 @@
         this.phase += 0.07;
         const th = this.getTheme();
 
+        // Gestion du Timer d'Événement actif
+        if (this.activeEvent) {
+          this.eventTimer -= dt;
+          if (this.eventTimer <= 0) {
+            this.activeEvent = null;
+            this.sequence = ['P', 'O', 'U', 'I', 'C'];
+            this.addFloatingText(this.width / 2, 160, "✨ FIN DE L'ÉVÉNEMENT DU NEXUS ✨", "#38bdf8", 22);
+          }
+        }
+
         if (this.feverGauge >= 1.0 && !this.isFever) {
           this.isFever = true;
           this.addFloatingText(this.width / 2, 120, "⚡ OVERDRIVE ACTIVE (x2 POINTS) ⚡", "#ffe600", 24);
@@ -1602,12 +1784,39 @@
         const cx = this.width / 2 + offX;
         const cy = this.height / 2 + offY;
 
+        this.ctx.save();
+
+        // Si événement Monde à l'envers
+        if (this.activeEvent === 'INVERTED') {
+          this.ctx.translate(this.width, this.height);
+          this.ctx.rotate(Math.PI);
+        }
+
         this.ctx.fillStyle = "#05030a";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.menuButtons = {};
 
         // 1. Fond Animé Unique du Thème Actif
         this.bgEngine.draw(this.ctx, this.activeThemeId, this.phase, this.width, this.height, cx, cy);
+
+        // Orbes de la Purge du Void
+        if (this.activeEvent === 'PURGE' && this.purgeOrbs.length > 0) {
+          this.purgeOrbs.forEach(orb => {
+            this.ctx.fillStyle = orb.color;
+            this.ctx.beginPath();
+            this.ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.strokeStyle = "#ffffff";
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+
+            this.ctx.textAlign = "center";
+            this.ctx.textBaseline = "middle";
+            this.ctx.font = "bold 16px Impact";
+            this.ctx.fillStyle = "#000";
+            this.ctx.fillText(orb.isCoin ? "🪙" : "💥", orb.x, orb.y);
+          });
+        }
 
         // 2. Visualiseur Audio discret
         this.audio.vizLevel *= 0.92;
@@ -1660,6 +1869,16 @@
           }
         }
 
+        // Bannière d'Événement Actif
+        if (this.activeEvent) {
+          this.ctx.fillStyle = "rgba(239, 68, 68, 0.25)";
+          this.ctx.fillRect(0, 56, this.width, 24);
+          this.ctx.textAlign = "center";
+          this.ctx.font = "bold 12px Consolas";
+          this.ctx.fillStyle = "#fca5a5";
+          this.ctx.fillText(`🚨 ÉVÉNEMENT ACTIF : ${this.activeEvent} (TEMPS RESTANT : ${Math.ceil(this.eventTimer)}s) 🚨`, this.width / 2, 72);
+        }
+
         // 4. Header HUD Supérieur
         this.ctx.textAlign = "left";
         this.ctx.font = "15px Impact";
@@ -1693,16 +1912,6 @@
         this.ctx.fillStyle = this.isOwner ? "#fbbf24" : "#e2e8f0";
         this.ctx.fillText(authBadge, this.width - 30, 36);
 
-        // Annonce Mondiale
-        if (this.globalBroadcast) {
-          this.ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
-          this.ctx.fillRect(0, 56, this.width, 22);
-          this.ctx.textAlign = "center";
-          this.ctx.font = "bold 11px Consolas";
-          this.ctx.fillStyle = "#fca5a5";
-          this.ctx.fillText(`📢 ANNONCE MONDIALE : ${this.globalBroadcast}`, this.width / 2, 71);
-        }
-
         // 5. Machine d'États
         if (this.state === "MENU") {
           this.ctx.textAlign = "center";
@@ -1712,18 +1921,18 @@
 
           this.ctx.font = "bold 15px Consolas";
           this.ctx.fillStyle = th.accent;
-          this.ctx.fillText("⚡ TRANSCENDENCE 3.5 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
+          this.ctx.fillText("⚡ TRANSCENDENCE 4.0 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
 
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#94a3b8";
           this.ctx.fillText(`THÈME : ${th.name} (${th.desc})  |  MODE : ${this.difficulty}`, cx, cy - 85);
 
           this.drawInteractiveBtn("PLAY", cx, cy - 20, 330, 64, "🎮 JOUER", "[CLIQUE OU ENTRÉE]", th.primary);
-          this.drawInteractiveBtn("SHOP", cx, cy + 52, 330, 48, "🛍️ BOUTIQUE DE THÈMES", "[11 FONDS & SONS UNIQUES]", "#fbbf24");
+          this.drawInteractiveBtn("SHOP", cx, cy + 52, 330, 48, "🛍️ BOUTIQUE DE THÈMES", "[11 LOGOS & SONS HD]", "#fbbf24");
           this.drawInteractiveBtn("LEADERBOARD", cx, cy + 108, 330, 48, "🏆 CLASSEMENT MONDIAL", "[VRAIS JOUEURS CLOUD]", th.secondary);
 
           if (this.isOwner) {
-            this.drawInteractiveBtn("ADMIN_PANEL", cx, cy + 164, 330, 48, "👑 SUPER-PANNEAU STAFF", "[CONTRÔLES TOTAL OWNER]", "#fbbf24");
+            this.drawInteractiveBtn("ADMIN_PANEL", cx, cy + 164, 330, 48, "👑 SUPER-PANNEAU STAFF", "[ÉVÉNEMENTS & CONTRÔLES]", "#fbbf24");
             this.drawInteractiveBtn("SETTINGS", cx - 85, cy + 220, 155, 42, "⚙️ PARAMÈTRES", "", "#64748b");
             this.drawInteractiveBtn("STATS", cx + 85, cy + 220, 155, 42, "📊 STATISTIQUES", "", "#64748b");
           } else {
@@ -1731,9 +1940,9 @@
             this.drawInteractiveBtn("STATS", cx, cy + 216, 330, 44, "📊 STATISTIQUES", "", "#64748b");
           }
 
-        // --- BOUTIQUE DE THÈMES ---
+        // --- BOUTIQUE DE THÈMES AVEC LOGOS HD ---
         } else if (this.state === "SHOP") {
-          this.drawGlassCard(cx, cy, 660, 560, "#fbbf24");
+          this.drawGlassCard(cx, cy, 680, 560, "#fbbf24");
           this.ctx.textAlign = "center";
           this.ctx.font = "28px Impact";
           this.ctx.fillStyle = "#fbbf24";
@@ -1754,23 +1963,30 @@
             this.ctx.fillStyle = "rgba(15, 10, 28, 0.9)";
             this.ctx.strokeStyle = isEquipped ? item.primary : (isUnlocked ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)");
             this.ctx.lineWidth = isEquipped ? 2 : 1;
-            this.ctx.fillRect(cx - 290, rowY, 580, 72);
-            this.ctx.strokeRect(cx - 290, rowY, 580, 72);
+            this.ctx.fillRect(cx - 310, rowY, 620, 72);
+            this.ctx.strokeRect(cx - 310, rowY, 620, 72);
 
+            // Pastille & Logo Emoji HD
             this.ctx.fillStyle = item.primary;
             this.ctx.beginPath();
-            this.ctx.arc(cx - 260, rowY + 36, 14, 0, Math.PI * 2);
+            this.ctx.arc(cx - 275, rowY + 36, 18, 0, Math.PI * 2);
             this.ctx.fill();
 
+            this.ctx.textAlign = "center";
+            this.ctx.font = "18px sans-serif";
+            this.ctx.fillText(item.icon, cx - 275, rowY + 42);
+
+            // Titre & Description
             this.ctx.textAlign = "left";
             this.ctx.font = "bold 16px Impact";
             this.ctx.fillStyle = "#ffffff";
-            this.ctx.fillText(item.name, cx - 230, rowY + 28);
+            this.ctx.fillText(item.name, cx - 245, rowY + 28);
 
             this.ctx.font = "11px Consolas";
             this.ctx.fillStyle = "#94a3b8";
-            this.ctx.fillText(`${item.desc} • Audio: ${item.synth}`, cx - 230, rowY + 50);
+            this.ctx.fillText(`${item.desc} • Audio: ${item.synth}`, cx - 245, rowY + 50);
 
+            // Bouton Action
             let btnText = "ÉQUIPER";
             let btnBorder = item.primary;
             if (isEquipped) {
@@ -1781,7 +1997,7 @@
               btnBorder = this.voidCoins >= item.price ? "#fbbf24" : "#ef4444";
             }
 
-            this.drawInteractiveBtn(`THEME_ACTION_${item.id}`, cx + 210, rowY + 36, 130, 42, btnText, "", btnBorder);
+            this.drawInteractiveBtn(`THEME_ACTION_${item.id}`, cx + 225, rowY + 36, 130, 42, btnText, "", btnBorder);
           });
 
           const maxPage = Math.ceil(ALL_THEMES.length / this.themesPerPage);
@@ -1898,7 +2114,7 @@
             this.startGame();
           }
 
-        // --- EN JEU (LETTRES P-O-U-I-C & POUIC SLAM) ---
+        // --- EN JEU ---
         } else if (this.state === "PLAYING_LETTERS" || this.state === "POUIC_SLAM") {
           this.timeRemaining -= dt;
           if (this.timeRemaining <= 0) {
@@ -2063,6 +2279,8 @@
         this.ctx.font = "11px Consolas";
         this.ctx.fillStyle = "#64748b";
         this.ctx.fillText("[P][O][U][I][C] Clavier/Souris/Tactile  |  [ESPACE] Pouic Slam  |  [M] Muet  •  by @zanioxx_off", this.width / 2, this.height - 15);
+
+        this.ctx.restore();
 
         requestAnimationFrame((t) => this.loop(t));
       }

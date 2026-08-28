@@ -1,6 +1,6 @@
-# ⚡ VOID POUIC NEXUS : TRANSCENDENCE 3.0
+# ⚡ VOID POUIC NEXUS : TRANSCENDENCE 4.0
 
-> **Jeu d'arcade cyberpunk rythmé avec Classement Mondial Réel Cloud, Panneau d'Administration Staff Owner, et 11 Thèmes aux Fonds & Sons 100% Procéduraux.**  
+> **Jeu d'arcade cyberpunk rythmé avec Événements Mondiaux en Direct (Purge du Void, Monde à l'Envers), Classement Mondial Cloud, Logos HD et Panneau d'Administration Staff Owner.**  
 > *Architecture par @zanioxx_off — Compte Maître : `maxiimenax05@gmail.com`*
 
 ---
@@ -10,31 +10,17 @@
 
 ---
 
-## 🌌 Nouveautés Majeures de la Version 3.0
+## 🌌 Nouveautés Majeures de la Version 4.0
 
-- 🌐 **Vrai Leaderboard Mondial (Cloud Live Sync)** :
-  - Synchronisation en direct entre tous les vrais joueurs à travers le monde.
-  - Sauvegarde instantanée des scores, combos et rangs.
-- 👑 **Accès STAFF & Propriétaire (Owner `maxiimenax05@gmail.com`)** :
-  - Badge exclusif **`👑 OWNER / CRÉATEUR`** sur le leaderboard et le profil.
-  - **Panneau Staff d'Administration complet** :
-    - 🪙 Génération de Void Coins (+100, +1 000).
-    - ✨ Déblocage instantané des 11 thèmes.
-    - 🛡️ Mode Invincible / God Mode pour tester les paliers de vitesse.
-    - 🗑️ Gestion et réinitialisation du Leaderboard mondial.
-    - 📢 Diffusion d'annonces mondiales en jeu.
-- 🎨 **11 Thèmes avec Fonds Animés ET Synthèses Audio 100% Uniques** :
-  - **Void Amethyst** : Nébuleuse tourbillonnante & ondes harmoniques spatialisées.
-  - **Cyber Ice** : Blizzard boréal & carillons cristallins.
-  - **Matrix Code** : Pluie de code binaire verte & sons chiptune 8-bit rétro.
-  - **Solar Flare** : Braises de lave & synthétiseur saw chaud.
-  - **Blood Moon** : Éclipse carmin & cloches métalliques sombres.
-  - **Sakura Vapor** : Pétales de cerisiers flottants & cloches lo-fi FM.
-  - **Synthwave 84** : Grille 3D perspective & cuivres analogiques années 80.
-  - **Quantum Glitch** : Scanlines & impulsions bitcrushées.
-  - **Dark Matter** : Trou noir gravitationnel & sub-drones profonds.
-  - **Hyper Gold** : Rayons dorés & cuivres royaux symphoniques.
-  - **Celestial Divinity** : Faisceaux de lumière sainte & chœurs célestes.
+- 🌪️ **Système d'ÉVÉNEMENTS DU NEXUS (Déclenchables en direct pour tous)** :
+  - **🩸 La Purge du Void** : Sirène d'alerte, pluie de 18 cibles orbes rouges et dorées partout à l'écran, récolte massive de Void Coins et points !
+  - **🔄 Le Monde à l'Envers** : Rotation à 180°, séquence inversée (`C-I-U-O-P`) avec multiplicateur x3 !
+  - **⚡ Supernova Overdrive** : Vitesse turbo et multiplicateur x5.
+  - **🧊 Zéro Absolu** : Ralenti temporel bullet-time à 70%.
+- 📢 **Popup Holographique d'Annonce Mondiale** : Fenêtre d'alerte cybernétique avec sirène lorsqu'une annonce est diffusée.
+- 🛍️ **Boutique Sublimée avec LOGOS HD** (🔮, ❄️, 📟, ☀️, 🩸, 🌸, 🕶️, ⚡, 🕳️, 👑, 🪽).
+- 👑 **Super-Panneau Staff enrichi** pour `maxiimenax05@gmail.com` (déclencheur d'événements, générateur de pièces, modération, God Mode).
+- 🌐 **Classement Mondial Cloud Live** avec synchronisation persistante.
 
 ---
 
