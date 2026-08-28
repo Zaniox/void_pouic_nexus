@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VOID POUIC NEXUS : TRANSCENDENCE 3.0</title>
+  <title>VOID POUIC NEXUS : TRANSCENDENCE 3.5 — OFFICIAL EDITION</title>
   
   <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -79,7 +79,7 @@
       box-shadow: 0 6px 28px rgba(255, 0, 127, 0.5);
     }
 
-    /* Modal Authentification & Profil */
+    /* Modals */
     #auth-modal, #admin-modal {
       position: fixed;
       inset: 0;
@@ -90,50 +90,52 @@
       z-index: 900;
       backdrop-filter: blur(10px);
     }
-    .auth-box {
+    .modal-box {
       background: #0f0a1e;
       border: 1px solid rgba(0, 240, 255, 0.3);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
       border-radius: 12px;
-      padding: 30px;
+      padding: 28px;
       width: 90%;
-      max-width: 460px;
+      max-width: 480px;
       text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    .auth-box h2 {
+    .modal-box h2 {
       font-family: 'Impact', sans-serif;
       color: #00f0ff;
       font-size: 1.8rem;
       margin-bottom: 8px;
       letter-spacing: 1px;
     }
-    .auth-box p {
+    .modal-box p {
       color: #94a3b8;
       font-size: 0.85rem;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       line-height: 1.4;
     }
-    .auth-input {
+    .input-field {
       width: 100%;
-      padding: 12px 16px;
+      padding: 11px 14px;
       background: #17102b;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 6px;
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-family: inherit;
       outline: none;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
-    .auth-input:focus {
+    .input-field:focus {
       border-color: #00f0ff;
     }
-    .auth-btn-row {
+    .btn-row {
       display: flex;
       gap: 10px;
       justify-content: center;
     }
-    .save-pseudo-btn, .admin-action-btn {
+    .primary-btn {
       flex: 1;
       background: #a855f7;
       color: #fff;
@@ -144,10 +146,10 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .save-pseudo-btn:hover, .admin-action-btn:hover {
+    .primary-btn:hover {
       background: #9333ea;
     }
-    .close-modal-btn {
+    .close-btn {
       background: rgba(255, 255, 255, 0.1);
       color: #cbd5e1;
       border: none;
@@ -155,7 +157,7 @@
       padding: 11px 18px;
       cursor: pointer;
     }
-    .close-modal-btn:hover {
+    .close-btn:hover {
       background: rgba(255, 255, 255, 0.2);
     }
     .google-custom-btn {
@@ -180,22 +182,32 @@
     .admin-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 15px 0;
+      gap: 8px;
+      margin: 14px 0;
     }
     .admin-btn {
-      padding: 10px;
+      padding: 9px;
       background: #1e1538;
       color: #fbbf24;
       border: 1px solid #fbbf24;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
     .admin-btn:hover {
       background: #fbbf24;
       color: #000;
+    }
+    .step-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      background: #2563eb;
+      color: #fff;
+      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -204,48 +216,86 @@
   <!-- Overlay Audio d'initialisation -->
   <div id="audio-overlay">
     <div class="overlay-title">⚡ VOID POUIC NEXUS ⚡</div>
-    <div class="overlay-subtitle">TRANSCENDENCE 3.0 // BY @ZANIOXX_OFF</div>
+    <div class="overlay-subtitle">TRANSCENDENCE 3.5 // BY @ZANIOXX_OFF</div>
     <button class="start-btn" id="init-btn">INITIALISER LE SYSTÈME</button>
   </div>
 
-  <!-- Modal Authentification / Google Login -->
+  <!-- Modal Authentification Google ➔ Choix du Pseudo -->
   <div id="auth-modal">
-    <div class="auth-box">
-      <h2>🏆 PROFIL JOUEUR & LEADERBOARD</h2>
-      <p>Connectez-vous pour figurer dans le classement mondial officiel.</p>
+    <div class="modal-box">
+      <h2>🏆 CONNEXION GOOGLE & PSEUDO</h2>
+      
+      <!-- Étape 1 : Connexion Google requise pour le Leaderboard -->
+      <div id="auth-step-1">
+        <span class="step-badge">ÉTAPE 1 / 2 : COMPTE GOOGLE REQUIS</span>
+        <p>Pour enregistrer vos scores sur le Leaderboard mondial, connectez-vous avec votre compte Google.</p>
 
-      <button class="google-custom-btn" id="google-login-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-        Connexion avec Google
-      </button>
+        <button class="google-custom-btn" id="google-login-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+          Se connecter avec Google
+        </button>
 
-      <div style="margin: 10px 0; color: #64748b; font-size: 0.8rem;">— OU PSEUDO / EMAIL —</div>
+        <div style="margin: 10px 0; color: #64748b; font-size: 0.75rem;">— OU SAISIE EMAIL DIRECTE (OWNER / INVITE) —</div>
+        <input type="text" id="manual-email-input" class="input-field" placeholder="maxiimenax05@gmail.com ou email..." />
+        <button class="primary-btn" id="confirm-email-btn" style="width: 100%; margin-bottom: 10px;">VALIDER L'EMAIL ➔</button>
+      </div>
 
-      <input type="text" id="pseudo-input" class="auth-input" placeholder="Votre Pseudo ou Email..." maxlength="30" />
+      <!-- Étape 2 : Choix du Pseudo -->
+      <div id="auth-step-2" style="display: none;">
+        <span class="step-badge" style="background:#22c55e;">ÉTAPE 2 / 2 : CHOISISSEZ VOTRE PSEUDO</span>
+        <p style="color:#a7f3d0;">Compte lié : <strong id="linked-email-txt">...</strong></p>
 
-      <div class="auth-btn-row">
-        <button class="save-pseudo-btn" id="save-pseudo-btn">VALIDER LE PROFIL</button>
-        <button class="close-modal-btn" id="close-auth-btn">FERMER</button>
+        <input type="text" id="pseudo-input" class="input-field" placeholder="Entrez votre Pseudo en jeu..." maxlength="15" />
+
+        <div class="btn-row">
+          <button class="primary-btn" id="save-pseudo-btn">ENREGISTRER LE PSEUDO</button>
+          <button class="close-btn" id="back-step1-btn">RETOUR</button>
+        </div>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <button class="close-btn" id="close-auth-btn" style="width: 100%;">FERMER</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal Administration / Panneau Staff Owner -->
+  <!-- Modal Administration / Super-Panneau Staff Owner -->
   <div id="admin-modal">
-    <div class="auth-box" style="border-color: #fbbf24; max-width: 500px;">
-      <h2 style="color: #fbbf24;">👑 PANNEAU STAFF / OWNER</h2>
+    <div class="modal-box" style="border-color: #fbbf24; max-width: 520px;">
+      <h2 style="color: #fbbf24;">👑 SUPER-PANNEAU STAFF & CRÉATEUR</h2>
       <p style="color: #fde047;">Accès Maître réservé à <strong style="color:#fff;">maxiimenax05@gmail.com</strong></p>
 
-      <div class="admin-grid">
-        <button class="admin-btn" id="adm-give-100">+100 VOID COINS</button>
-        <button class="admin-btn" id="adm-give-1000">+1 000 VOID COINS</button>
-        <button class="admin-btn" id="adm-unlock-all">DÉBLOQUER TOUS LES THÈMES</button>
-        <button class="admin-btn" id="adm-toggle-god">MODE INVINCIBLE : <span id="god-status">OFF</span></button>
-        <button class="admin-btn" id="adm-reset-leaderboard" style="color:#ef4444; border-color:#ef4444;">RESET LEADERBOARD</button>
-        <button class="admin-btn" id="adm-broadcast">DIFFUSER ANNONCE</button>
+      <!-- Section Void Coins -->
+      <div style="background: rgba(251, 191, 36, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(251, 191, 36, 0.3);">
+        <div style="font-size: 0.8rem; font-weight: bold; color: #fbbf24; margin-bottom: 6px;">🪙 AJOUTER DES VOID COINS</div>
+        <div class="btn-row" style="margin-bottom: 6px;">
+          <button class="admin-btn" id="adm-c100">+100</button>
+          <button class="admin-btn" id="adm-c500">+500</button>
+          <button class="admin-btn" id="adm-c5000">+5 000</button>
+        </div>
+        <div class="btn-row">
+          <input type="number" id="adm-custom-coin-input" class="input-field" placeholder="Montant personnalisé..." style="margin-bottom: 0;" />
+          <button class="admin-btn" id="adm-give-custom" style="padding: 0 16px;">AJOUTER</button>
+        </div>
       </div>
 
-      <button class="close-modal-btn" id="close-admin-btn" style="width: 100%;">QUITTER LE PANNEAU STAFF</button>
+      <!-- Actions de Test & Débogage -->
+      <div class="admin-grid">
+        <button class="admin-btn" id="adm-unlock-all">✨ DÉBLOQUER TOUT</button>
+        <button class="admin-btn" id="adm-toggle-god">🛡️ GOD MODE : <span id="god-status">OFF</span></button>
+        <button class="admin-btn" id="adm-set-round">⚡ CYCLE DE DÉPART : <span id="round-start-txt">1</span></button>
+        <button class="admin-btn" id="adm-time-speed">⏱️ VITESSE : <span id="speed-txt">x1.0</span></button>
+        <button class="admin-btn" id="adm-fake-score">🏆 TOP 1 PERSO (2.5M)</button>
+        <button class="admin-btn" id="adm-delete-user" style="color:#f87171; border-color:#f87171;">🗑️ SUPPRIMER UN JOUEUR</button>
+      </div>
+
+      <!-- Annonce Mondiale & Reset -->
+      <div class="btn-row" style="margin-bottom: 10px;">
+        <button class="admin-btn" id="adm-broadcast" style="flex:1;">📢 ANNONCE MONDIALE</button>
+        <button class="admin-btn" id="adm-reset-leaderboard" style="color:#ef4444; border-color:#ef4444; flex:1;">💣 RESET LEADERBOARD</button>
+      </div>
+
+      <button class="close-btn" id="close-admin-btn" style="width: 100%;">QUITTER LE PANNEAU STAFF</button>
     </div>
   </div>
 
@@ -253,156 +303,24 @@
 
   <script>
     // =====================================================================
-    // 1. DÉFINITION DES 11 THÈMES (PALETTES & CARACTÉRISTIQUES)
+    // 1. DÉFINITION DES 11 THÈMES
     // =====================================================================
     const ALL_THEMES = [
-      {
-        id: "amethyst",
-        name: "VOID AMETHYST",
-        price: 0,
-        desc: "Nébuleuse cosmique violette",
-        primary: "#00f0ff",
-        accent: "#ff007f",
-        secondary: "#a855f7",
-        bg_glow: "#16022c",
-        stars: "#d8b4fe",
-        card: "#0c0618",
-        synth: "sine_harmonic"
-      },
-      {
-        id: "cyber_ice",
-        name: "CYBER ICE",
-        price: 5,
-        desc: "Blizzard glacial & cristal pur",
-        primary: "#38bdf8",
-        accent: "#00f7ff",
-        secondary: "#818cf8",
-        bg_glow: "#02172b",
-        stars: "#bae6fd",
-        card: "#031020",
-        synth: "crystal_ice"
-      },
-      {
-        id: "matrix_neon",
-        name: "MATRIX CODE",
-        price: 10,
-        desc: "Pluie de code binaire vert 8-bit",
-        primary: "#22c55e",
-        accent: "#00ffcc",
-        secondary: "#4ade80",
-        bg_glow: "#021c0c",
-        stars: "#bbf7d0",
-        card: "#02140a",
-        synth: "chiptune_8bit"
-      },
-      {
-        id: "solar_flare",
-        name: "SOLAR FLARE",
-        price: 15,
-        desc: "Éruption stellaire & lave en fusion",
-        primary: "#fbbf24",
-        accent: "#ff0055",
-        secondary: "#f97316",
-        bg_glow: "#26040a",
-        stars: "#fef08a",
-        card: "#190409",
-        synth: "warm_saw"
-      },
-      {
-        id: "blood_moon",
-        name: "BLOOD MOON",
-        price: 25,
-        desc: "Éclipse carmin & orages sombres",
-        primary: "#ef4444",
-        accent: "#b91c1c",
-        secondary: "#f87171",
-        bg_glow: "#2b0303",
-        stars: "#fca5a5",
-        card: "#180303",
-        synth: "metallic_dark"
-      },
-      {
-        id: "sakura_vapor",
-        name: "SAKURA VAPOR",
-        price: 35,
-        desc: "Pétales de cerisiers néo-Tokyo",
-        primary: "#f472b6",
-        accent: "#38bdf8",
-        secondary: "#c084fc",
-        bg_glow: "#240a2b",
-        stars: "#fbcfe8",
-        card: "#16071c",
-        synth: "lofi_bell"
-      },
-      {
-        id: "synthwave_84",
-        name: "SYNTHWAVE 84",
-        price: 50,
-        desc: "Grille 3D & soleil rétro analogique",
-        primary: "#ec4899",
-        accent: "#f59e0b",
-        secondary: "#8b5cf6",
-        bg_glow: "#290425",
-        stars: "#fde047",
-        card: "#170216",
-        synth: "retro_brass"
-      },
-      {
-        id: "quantum_glitch",
-        name: "QUANTUM GLITCH",
-        price: 75,
-        desc: "Distorsions holographiques cyber",
-        primary: "#06b6d4",
-        accent: "#ec4899",
-        secondary: "#eab308",
-        bg_glow: "#051f2d",
-        stars: "#67e8f9",
-        card: "#03141f",
-        synth: "bitcrush_glitch"
-      },
-      {
-        id: "dark_matter",
-        name: "DARK MATTER",
-        price: 100,
-        desc: "Trou noir & vortex gravitationnel",
-        primary: "#94a3b8",
-        accent: "#64748b",
-        secondary: "#cbd5e1",
-        bg_glow: "#0f172a",
-        stars: "#e2e8f0",
-        card: "#090d16",
-        synth: "sub_drone"
-      },
-      {
-        id: "hyper_gold",
-        name: "HYPER GOLD",
-        price: 150,
-        desc: "Rayons dorés & carillons impériaux",
-        primary: "#facc15",
-        accent: "#ca8a04",
-        secondary: "#fde047",
-        bg_glow: "#2d1f03",
-        stars: "#fef9c3",
-        card: "#181102",
-        synth: "royal_brass"
-      },
-      {
-        id: "celestial_divinity",
-        name: "CELESTIAL DIVINITY",
-        price: 250,
-        desc: "Halos angéliques & chœurs sacrés",
-        primary: "#e0e7ff",
-        accent: "#c084fc",
-        secondary: "#38bdf8",
-        bg_glow: "#1a1638",
-        stars: "#ffffff",
-        card: "#0d0b21",
-        synth: "celestial_choir"
-      }
+      { id: "amethyst", name: "VOID AMETHYST", price: 0, desc: "Nébuleuse cosmique violette", primary: "#00f0ff", accent: "#ff007f", secondary: "#a855f7", bg_glow: "#16022c", stars: "#d8b4fe", card: "#0c0618", synth: "sine_harmonic" },
+      { id: "cyber_ice", name: "CYBER ICE", price: 5, desc: "Blizzard glacial & cristal pur", primary: "#38bdf8", accent: "#00f7ff", secondary: "#818cf8", bg_glow: "#02172b", stars: "#bae6fd", card: "#031020", synth: "crystal_ice" },
+      { id: "matrix_neon", name: "MATRIX CODE", price: 10, desc: "Pluie de code binaire vert 8-bit", primary: "#22c55e", accent: "#00ffcc", secondary: "#4ade80", bg_glow: "#021c0c", stars: "#bbf7d0", card: "#02140a", synth: "chiptune_8bit" },
+      { id: "solar_flare", name: "SOLAR FLARE", price: 15, desc: "Éruption stellaire & lave en fusion", primary: "#fbbf24", accent: "#ff0055", secondary: "#f97316", bg_glow: "#26040a", stars: "#fef08a", card: "#190409", synth: "warm_saw" },
+      { id: "blood_moon", name: "BLOOD MOON", price: 25, desc: "Éclipse carmin & orages sombres", primary: "#ef4444", accent: "#b91c1c", secondary: "#f87171", bg_glow: "#2b0303", stars: "#fca5a5", card: "#180303", synth: "metallic_dark" },
+      { id: "sakura_vapor", name: "SAKURA VAPOR", price: 35, desc: "Pétales de cerisiers néo-Tokyo", primary: "#f472b6", accent: "#38bdf8", secondary: "#c084fc", bg_glow: "#240a2b", stars: "#fbcfe8", card: "#16071c", synth: "lofi_bell" },
+      { id: "synthwave_84", name: "SYNTHWAVE 84", price: 50, desc: "Grille 3D & soleil rétro analogique", primary: "#ec4899", accent: "#f59e0b", secondary: "#8b5cf6", bg_glow: "#290425", stars: "#fde047", card: "#170216", synth: "retro_brass" },
+      { id: "quantum_glitch", name: "QUANTUM GLITCH", price: 75, desc: "Distorsions holographiques cyber", primary: "#06b6d4", accent: "#ec4899", secondary: "#eab308", bg_glow: "#051f2d", stars: "#67e8f9", card: "#03141f", synth: "bitcrush_glitch" },
+      { id: "dark_matter", name: "DARK MATTER", price: 100, desc: "Trou noir & vortex gravitationnel", primary: "#94a3b8", accent: "#64748b", secondary: "#cbd5e1", bg_glow: "#0f172a", stars: "#e2e8f0", card: "#090d16", synth: "sub_drone" },
+      { id: "hyper_gold", name: "HYPER GOLD", price: 150, desc: "Rayons dorés & carillons impériaux", primary: "#facc15", accent: "#ca8a04", secondary: "#fde047", bg_glow: "#2d1f03", stars: "#fef9c3", card: "#181102", synth: "royal_brass" },
+      { id: "celestial_divinity", name: "CELESTIAL DIVINITY", price: 250, desc: "Halos angéliques & chœurs sacrés", primary: "#e0e7ff", accent: "#c084fc", secondary: "#38bdf8", bg_glow: "#1a1638", stars: "#ffffff", card: "#0d0b21", synth: "celestial_choir" }
     ];
 
     // =====================================================================
-    // 2. MOTEUR AUDIO POLYVALENT AVEC 11 PROFILS SONORES UNIQUES
+    // 2. MOTEUR AUDIO AVEC 11 PROFILS SONORES PROCÉDURAUX
     // =====================================================================
     class ProceduralAudioMatrix {
       constructor() {
@@ -438,9 +356,8 @@
         const master = this.ctx.createGain();
         master.gain.value = this.volume;
 
-        let panner = null;
         if (this.ctx.createStereoPanner) {
-          panner = this.ctx.createStereoPanner();
+          const panner = this.ctx.createStereoPanner();
           panner.pan.value = Math.max(-1.0, Math.min(1.0, pan));
           master.connect(panner);
           panner.connect(this.ctx.destination);
@@ -451,10 +368,9 @@
         const theme = ALL_THEMES.find(t => t.id === themeId) || ALL_THEMES[0];
         const synthType = theme.synth;
 
-        // --- SONS DE NOTES P-O-U-I-C ---
         if (name.startsWith('note_')) {
           const idx = parseInt(name.split('_')[1], 10) || 0;
-          const scale = [523.25, 587.33, 659.25, 783.99, 880.00]; // Do, Ré, Mi, Sol, La
+          const scale = [523.25, 587.33, 659.25, 783.99, 880.00];
           const f = scale[idx] || 523.25;
 
           const osc = this.ctx.createOscillator();
@@ -504,11 +420,9 @@
           osc.start(now);
           osc.stop(now + 0.36);
 
-        // --- SON POUIC DU THÈME ---
         } else if (name === 'pouic') {
           const osc1 = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-
           if (synthType === 'chiptune_8bit') {
             osc1.type = 'square';
             osc1.frequency.setValueAtTime(240, now);
@@ -517,16 +431,11 @@
             osc1.type = 'triangle';
             osc1.frequency.setValueAtTime(600, now);
             osc1.frequency.exponentialRampToValueAtTime(2400, now + 0.14);
-          } else if (synthType === 'retro_brass') {
-            osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(280, now);
-            osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.16);
           } else {
             osc1.type = 'sine';
             osc1.frequency.setValueAtTime(320, now);
             osc1.frequency.exponentialRampToValueAtTime(1450, now + 0.14);
           }
-
           gain.gain.setValueAtTime(0.65, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
           osc1.connect(gain);
@@ -534,7 +443,6 @@
           osc1.start(now);
           osc1.stop(now + 0.16);
 
-        // --- POUIC SLAM (SUB-BASS EXPLOSIF DU THÈME) ---
         } else if (name === 'slam') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -548,7 +456,6 @@
           osc.start(now);
           osc.stop(now + 0.35);
 
-        // --- PERFECT TIMING ---
         } else if (name === 'perfect') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -562,7 +469,6 @@
           osc.start(now);
           osc.stop(now + 0.21);
 
-        // --- VOID COIN GAIN ---
         } else if (name === 'coin') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -576,7 +482,6 @@
           osc.start(now);
           osc.stop(now + 0.27);
 
-        // --- UI CLICK ---
         } else if (name === 'ui_click') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -589,7 +494,6 @@
           osc.start(now);
           osc.stop(now + 0.05);
 
-        // --- FAIL / SURCHAUFFE ---
         } else if (name === 'fail') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -607,7 +511,7 @@
     }
 
     // =====================================================================
-    // 3. GÉNÉRATEURS D'ENVIRONNEMENTS VISUELS ANIMÉS POUR CHAQUE THÈME
+    // 3. ENVIRONNEMENTS VISUELS ANIMÉS PAR THÈME
     // =====================================================================
     class DynamicThemeBackgrounds {
       constructor() {
@@ -636,7 +540,6 @@
       }
 
       draw(ctx, themeId, phase, w, h, cx, cy) {
-        // --- 1. VOID AMETHYST (Nébuleuse violette tourbillonnante) ---
         if (themeId === "amethyst") {
           const pulse = (Math.sin(phase * 0.5) + 1.0) * 0.5;
           const rGlow = 360 + pulse * 45;
@@ -648,7 +551,6 @@
           ctx.arc(cx, cy, rGlow, 0, Math.PI * 2);
           ctx.fill();
 
-        // --- 2. CYBER ICE (Blizzard & Aurore polaire glaciale) ---
         } else if (themeId === "cyber_ice") {
           const grad = ctx.createLinearGradient(0, 0, w, h);
           grad.addColorStop(0, "rgba(2, 23, 43, 0.4)");
@@ -666,7 +568,6 @@
             ctx.stroke();
           }
 
-        // --- 3. MATRIX CODE (Pluie de code binaire vert en cascade) ---
         } else if (themeId === "matrix_neon") {
           ctx.fillStyle = "rgba(0, 255, 100, 0.6)";
           ctx.font = "bold 13px Consolas";
@@ -680,7 +581,6 @@
             ctx.fillText(char, d.x, d.y);
           });
 
-        // --- 4. SOLAR FLARE (Éruption solaire & braises de lave montantes) ---
         } else if (themeId === "solar_flare") {
           const grad = ctx.createRadialGradient(cx, cy + 100, 40, cx, cy + 100, 420);
           grad.addColorStop(0, "rgba(255, 80, 0, 0.25)");
@@ -700,7 +600,6 @@
             ctx.fill();
           });
 
-        // --- 5. BLOOD MOON (Éclipse carmin & halos sombres) ---
         } else if (themeId === "blood_moon") {
           const moonR = 140;
           ctx.fillStyle = "rgba(185, 28, 28, 0.2)";
@@ -716,7 +615,6 @@
           ctx.lineWidth = 2;
           ctx.stroke();
 
-        // --- 6. SAKURA VAPOR (Pétales de cerisiers néo-Tokyo) ---
         } else if (themeId === "sakura_vapor") {
           this.sakuraPetals.forEach(p => {
             p.x += p.vx;
@@ -736,7 +634,6 @@
             ctx.restore();
           });
 
-        // --- 7. SYNTHWAVE 84 (Grille 3D rétro-futuriste & soleil d'horizon) ---
         } else if (themeId === "synthwave_84") {
           const sunY = cy - 60;
           const grad = ctx.createLinearGradient(cx, sunY - 90, cx, sunY + 90);
@@ -747,7 +644,6 @@
           ctx.arc(cx, sunY, 90, Math.PI, 0, false);
           ctx.fill();
 
-          // Grille perspective
           ctx.strokeStyle = "rgba(236, 72, 153, 0.25)";
           ctx.lineWidth = 1.5;
           const horizon = cy + 60;
@@ -764,7 +660,6 @@
             ctx.stroke();
           }
 
-        // --- 8. QUANTUM GLITCH (Scanlines & distorsion de réalité) ---
         } else if (themeId === "quantum_glitch") {
           ctx.fillStyle = "rgba(6, 182, 212, 0.04)";
           for (let y = 0; y < h; y += 6) {
@@ -775,7 +670,6 @@
             ctx.fillRect(0, Math.random() * h, w, Math.random() * 20);
           }
 
-        // --- 9. DARK MATTER (Trou noir gravitationnel & vortex) ---
         } else if (themeId === "dark_matter") {
           const vortexR = 220;
           ctx.save();
@@ -791,7 +685,6 @@
           ctx.fill();
           ctx.restore();
 
-        // --- 10. HYPER GOLD (Rayons dorés royaux & mandalas) ---
         } else if (themeId === "hyper_gold") {
           ctx.save();
           ctx.translate(cx, cy);
@@ -807,7 +700,6 @@
           }
           ctx.restore();
 
-        // --- 11. CELESTIAL DIVINITY (Faisceaux de lumière divine sacrée) ---
         } else if (themeId === "celestial_divinity") {
           const grad = ctx.createLinearGradient(cx, 0, cx, h);
           grad.addColorStop(0, "rgba(224, 231, 255, 0.25)");
@@ -826,13 +718,12 @@
     }
 
     // =====================================================================
-    // 4. CLOUD LEADERBOARD SYNCHRONISÉ EN TEMPS RÉEL
+    // 4. SERVICE CLOUD LEADERBOARD SYNCHRONISÉ
     // =====================================================================
     class CloudLeaderboardService {
       constructor() {
-        // Stockage cloud partagé (avec fallback automatique haute disponibilité)
-        this.cloudUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_leaderboard";
-        this.localKey = "global_leaderboard_v3";
+        this.cloudUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_leaderboard_v35";
+        this.localKey = "global_leaderboard_v35";
       }
 
       async fetchScores() {
@@ -845,25 +736,31 @@
               return data;
             }
           }
-        } catch (e) {
-          // Utilisation du cache local
-        }
+        } catch (e) {}
+
         const cached = localStorage.getItem(this.localKey);
         if (cached) {
           try { return JSON.parse(cached); } catch (e) {}
         }
         return [
-          { name: "👑 @zanioxx_off", score: 1450000, combo: 64, rank: "SSS VOID EMPEROR", isOwner: true },
-          { name: "⚡ QUANTUM_DEV", score: 1120000, combo: 52, rank: "SSS VOID EMPEROR" },
-          { name: "CYBER_NEXUS", score: 850000, combo: 41, rank: "S NEXUS MASTER" },
-          { name: "NEO_RUNNER", score: 620000, combo: 33, rank: "S NEXUS MASTER" },
-          { name: "GLITCH_99", score: 430000, combo: 24, rank: "A SPEED RUNNER" }
+          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1650000, combo: 72, rank: "SSS VOID EMPEROR", isOwner: true },
+          { name: "⚡ QUANTUM_DEV", email: "dev***@gmail.com", score: 1120000, combo: 52, rank: "SSS VOID EMPEROR", isOwner: false },
+          { name: "CYBER_NEXUS", email: "cyber***@gmail.com", score: 850000, combo: 41, rank: "S NEXUS MASTER", isOwner: false }
         ];
       }
 
       async saveScore(newEntry) {
         const scores = await this.fetchScores();
-        scores.push(newEntry);
+        // Remplacement ou ajout
+        const existingIdx = scores.findIndex(s => s.name === newEntry.name);
+        if (existingIdx !== -1) {
+          if (newEntry.score > scores[existingIdx].score) {
+            scores[existingIdx] = newEntry;
+          }
+        } else {
+          scores.push(newEntry);
+        }
+
         scores.sort((a, b) => b.score - a.score);
         const topScores = scores.slice(0, 20);
 
@@ -878,9 +775,23 @@
         return topScores;
       }
 
+      async deletePlayer(pseudo) {
+        let scores = await this.fetchScores();
+        scores = scores.filter(s => s.name.toLowerCase() !== pseudo.toLowerCase());
+        localStorage.setItem(this.localKey, JSON.stringify(scores));
+        try {
+          await fetch(this.cloudUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(scores)
+          });
+        } catch (e) {}
+        return scores;
+      }
+
       async clearAllScores() {
         const defaultScores = [
-          { name: "👑 @zanioxx_off", score: 1450000, combo: 64, rank: "SSS VOID EMPEROR", isOwner: true }
+          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 1650000, combo: 72, rank: "SSS VOID EMPEROR", isOwner: true }
         ];
         localStorage.setItem(this.localKey, JSON.stringify(defaultScores));
         try {
@@ -895,7 +806,7 @@
     }
 
     // =====================================================================
-    // 5. APPLICATION PRINCIPALE : VOID POUIC NEXUS 3.0
+    // 5. APPLICATION PRINCIPALE : VOID POUIC NEXUS 3.5
     // =====================================================================
     class VoidGame {
       constructor() {
@@ -911,8 +822,10 @@
         window.addEventListener('resize', () => this.resize());
 
         // Configuration Owner
-        this.ownerEmail = "maxiimenax05@gmail.com";
+        this.ownerEmails = ["maxiimenax05@gmail.com", "maximenax05@gmail.com"];
         this.isGodMode = false;
+        this.timeSpeedMult = 1.0;
+        this.startRoundSetting = 1;
         this.globalBroadcast = localStorage.getItem('global_broadcast') || "";
 
         // Sauvegarde & Économie persistante
@@ -923,7 +836,7 @@
         // Profil joueur & Détection Owner
         this.playerEmail = localStorage.getItem('player_email') || '';
         this.playerName = localStorage.getItem('player_pseudo') || 'GUEST_' + Math.floor(1000 + Math.random() * 9000);
-        this.isOwner = (this.playerEmail.toLowerCase() === this.ownerEmail.toLowerCase() || this.playerName.toLowerCase() === this.ownerEmail.toLowerCase());
+        this.checkOwnerStatus();
 
         // Scores et records
         this.highScore = parseInt(localStorage.getItem('high_score'), 10) || 0;
@@ -976,6 +889,11 @@
         this.bindEvents();
         this.bindModals();
         requestAnimationFrame((t) => this.loop(t));
+      }
+
+      checkOwnerStatus() {
+        const clean = this.playerEmail.toLowerCase().trim();
+        this.isOwner = this.ownerEmails.includes(clean) || localStorage.getItem('is_owner_override') === 'true';
       }
 
       async loadScoresAsync() {
@@ -1037,35 +955,65 @@
       }
 
       bindModals() {
-        // Modal Auth
         const authModal = document.getElementById('auth-modal');
+        const step1 = document.getElementById('auth-step-1');
+        const step2 = document.getElementById('auth-step-2');
+        const linkedEmailTxt = document.getElementById('linked-email-txt');
+        const manualEmailInput = document.getElementById('manual-email-input');
+        const confirmEmailBtn = document.getElementById('confirm-email-btn');
+        const googleLoginBtn = document.getElementById('google-login-btn');
         const pseudoInput = document.getElementById('pseudo-input');
         const savePseudoBtn = document.getElementById('save-pseudo-btn');
-        const googleLoginBtn = document.getElementById('google-login-btn');
+        const backStep1Btn = document.getElementById('back-step1-btn');
         const closeAuthBtn = document.getElementById('close-auth-btn');
 
-        savePseudoBtn.addEventListener('click', () => {
-          const val = pseudoInput.value.trim();
-          if (val) {
-            this.playerName = val;
-            this.playerEmail = val.includes('@') ? val : this.playerEmail;
-            this.isOwner = (this.playerEmail.toLowerCase() === this.ownerEmail.toLowerCase() || this.playerName.toLowerCase() === this.ownerEmail.toLowerCase());
-            this.saveData();
-            this.audio.play('ui_click');
-            authModal.style.display = 'none';
+        // Passage à l'étape 2 (Pseudo)
+        const proceedToStep2 = (email) => {
+          this.playerEmail = email.trim();
+          this.checkOwnerStatus();
+          linkedEmailTxt.textContent = this.playerEmail;
+          pseudoInput.value = this.playerName.startsWith('GUEST_') ? (this.isOwner ? '@zanioxx_off' : this.playerEmail.split('@')[0]) : this.playerName;
+          step1.style.display = 'none';
+          step2.style.display = 'block';
+          this.audio.play('perfect');
+        };
+
+        confirmEmailBtn.addEventListener('click', () => {
+          const val = manualEmailInput.value.trim();
+          if (val === '7777') {
+            // PIN Override Créateur
+            localStorage.setItem('is_owner_override', 'true');
+            proceedToStep2("maxiimenax05@gmail.com");
+            return;
+          }
+          if (val.includes('@') || val.length >= 3) {
+            proceedToStep2(val);
+          } else {
+            alert("Veuillez entrer une adresse email valide.");
           }
         });
 
         googleLoginBtn.addEventListener('click', () => {
-          const inputEmail = prompt("Connexion Google :\nEntrez votre adresse Google / Gmail :", this.playerEmail || this.ownerEmail);
-          if (inputEmail) {
-            this.playerEmail = inputEmail.trim();
-            this.playerName = inputEmail.split('@')[0];
-            this.isOwner = (this.playerEmail.toLowerCase() === this.ownerEmail.toLowerCase());
-            this.saveData();
-            this.audio.play('perfect');
-            authModal.style.display = 'none';
+          const email = prompt("Connexion Google :\nConfirmez ou entrez votre adresse Google / Gmail :", this.playerEmail || "maxiimenax05@gmail.com");
+          if (email && email.trim()) {
+            proceedToStep2(email);
           }
+        });
+
+        savePseudoBtn.addEventListener('click', () => {
+          const p = pseudoInput.value.trim();
+          if (p) {
+            this.playerName = p;
+            this.saveData();
+            this.audio.play('ui_click');
+            authModal.style.display = 'none';
+            alert(`✅ Profil validé avec succès !\nEmail: ${this.playerEmail}\nPseudo: ${this.playerName}`);
+          }
+        });
+
+        backStep1Btn.addEventListener('click', () => {
+          step2.style.display = 'none';
+          step1.style.display = 'block';
         });
 
         closeAuthBtn.addEventListener('click', () => {
@@ -1076,25 +1024,33 @@
         // Modal Admin / Staff
         const adminModal = document.getElementById('admin-modal');
         const closeAdminBtn = document.getElementById('close-admin-btn');
-        const give100Btn = document.getElementById('adm-give-100');
-        const give1000Btn = document.getElementById('adm-give-1000');
+        const c100 = document.getElementById('adm-c100');
+        const c500 = document.getElementById('adm-c500');
+        const c5000 = document.getElementById('adm-c5000');
+        const giveCustomBtn = document.getElementById('adm-give-custom');
+        const customCoinInput = document.getElementById('adm-custom-coin-input');
         const unlockAllBtn = document.getElementById('adm-unlock-all');
         const toggleGodBtn = document.getElementById('adm-toggle-god');
-        const resetLbBtn = document.getElementById('adm-reset-leaderboard');
+        const setRoundBtn = document.getElementById('adm-set-round');
+        const timeSpeedBtn = document.getElementById('adm-time-speed');
+        const fakeScoreBtn = document.getElementById('adm-fake-score');
+        const deleteUserBtn = document.getElementById('adm-delete-user');
         const broadcastBtn = document.getElementById('adm-broadcast');
+        const resetLbBtn = document.getElementById('adm-reset-leaderboard');
 
-        give100Btn.addEventListener('click', () => {
-          this.voidCoins += 100;
-          this.saveData();
-          this.audio.play('coin');
-          alert("🪙 +100 Void Coins ajoutés !");
-        });
+        c100.addEventListener('click', () => { this.voidCoins += 100; this.saveData(); this.audio.play('coin'); alert("🪙 +100 Void Coins !"); });
+        c500.addEventListener('click', () => { this.voidCoins += 500; this.saveData(); this.audio.play('coin'); alert("🪙 +500 Void Coins !"); });
+        c5000.addEventListener('click', () => { this.voidCoins += 5000; this.saveData(); this.audio.play('coin'); alert("🪙 +5 000 Void Coins !"); });
 
-        give1000Btn.addEventListener('click', () => {
-          this.voidCoins += 1000;
-          this.saveData();
-          this.audio.play('coin');
-          alert("🪙 +1 000 Void Coins ajoutés !");
+        giveCustomBtn.addEventListener('click', () => {
+          const amt = parseInt(customCoinInput.value, 10);
+          if (!isNaN(amt) && amt > 0) {
+            this.voidCoins += amt;
+            this.saveData();
+            this.audio.play('coin');
+            alert(`🪙 +${amt.toLocaleString()} Void Coins ajoutés !`);
+            customCoinInput.value = '';
+          }
         });
 
         unlockAllBtn.addEventListener('click', () => {
@@ -1110,20 +1066,61 @@
           this.audio.play('ui_click');
         });
 
-        resetLbBtn.addEventListener('click', async () => {
-          if (confirm("Confirmer la réinitialisation complète du classement mondial ?")) {
-            this.leaderboard = await this.cloudLeaderboard.clearAllScores();
+        setRoundBtn.addEventListener('click', () => {
+          const r = prompt("Choisir le cycle de départ (ex: 1, 5, 10, 15, 20) :", this.startRoundSetting);
+          if (r && !isNaN(parseInt(r, 10))) {
+            this.startRoundSetting = Math.max(1, parseInt(r, 10));
+            document.getElementById('round-start-txt').textContent = this.startRoundSetting;
+            this.audio.play('ui_click');
+          }
+        });
+
+        timeSpeedBtn.addEventListener('click', () => {
+          const speeds = [1.0, 0.5, 1.5, 2.0];
+          const curIdx = speeds.indexOf(this.timeSpeedMult);
+          this.timeSpeedMult = speeds[(curIdx + 1) % speeds.length];
+          document.getElementById('speed-txt').textContent = `x${this.timeSpeedMult.toFixed(1)}`;
+          this.audio.play('ui_click');
+        });
+
+        fakeScoreBtn.addEventListener('click', async () => {
+          const entry = {
+            name: `👑 ${this.playerName}`,
+            email: this.playerEmail,
+            score: 2500000,
+            combo: 99,
+            rank: "SSS VOID EMPEROR",
+            isOwner: true,
+            date: new Date().toLocaleDateString()
+          };
+          this.leaderboard = await this.cloudLeaderboard.saveScore(entry);
+          this.audio.play('perfect');
+          alert("🏆 Score Créateur de 2 500 000 PTS placé en Top 1 mondial !");
+        });
+
+        deleteUserBtn.addEventListener('click', async () => {
+          const target = prompt("Entrez le pseudo exact du joueur à retirer du Leaderboard :");
+          if (target) {
+            this.leaderboard = await this.cloudLeaderboard.deletePlayer(target);
             this.audio.play('slam');
-            alert("Classement mondial réinitialisé avec succès.");
+            alert(`Joueur "${target}" supprimé du Leaderboard.`);
           }
         });
 
         broadcastBtn.addEventListener('click', () => {
-          const msg = prompt("Message d'annonce mondial :", this.globalBroadcast);
+          const msg = prompt("Message d'annonce mondiale en jeu :", this.globalBroadcast);
           if (msg !== null) {
             this.globalBroadcast = msg.trim();
             localStorage.setItem('global_broadcast', this.globalBroadcast);
             this.audio.play('perfect');
+          }
+        });
+
+        resetLbBtn.addEventListener('click', async () => {
+          if (confirm("Confirmer la réinitialisation complète du classement mondial ?")) {
+            this.leaderboard = await this.cloudLeaderboard.clearAllScores();
+            this.audio.play('slam');
+            alert("Classement mondial réinitialisé.");
           }
         });
 
@@ -1134,12 +1131,16 @@
       }
 
       openAuthModal() {
-        document.getElementById('pseudo-input').value = this.playerEmail || (this.playerName.startsWith('GUEST_') ? '' : this.playerName);
+        document.getElementById('manual-email-input').value = this.playerEmail || '';
+        document.getElementById('auth-step-1').style.display = 'block';
+        document.getElementById('auth-step-2').style.display = 'none';
         document.getElementById('auth-modal').style.display = 'flex';
       }
 
       openAdminModal() {
         document.getElementById('god-status').textContent = this.isGodMode ? "ON" : "OFF";
+        document.getElementById('round-start-txt').textContent = this.startRoundSetting;
+        document.getElementById('speed-txt').textContent = `x${this.timeSpeedMult.toFixed(1)}`;
         document.getElementById('admin-modal').style.display = 'flex';
       }
 
@@ -1212,7 +1213,6 @@
         const cy = this.height / 2;
         this.clicksHistory.push(performance.now());
 
-        // Bouton Profil / Login en haut à droite
         if (mx >= this.width - 240 && mx <= this.width - 20 && my >= 15 && my <= 48) {
           this.audio.play('ui_click');
           this.openAuthModal();
@@ -1358,7 +1358,7 @@
       startGame() {
         this.state = "PLAYING_LETTERS";
         this.currentStep = 0;
-        this.roundNum = 1;
+        this.roundNum = this.startRoundSetting || 1;
         this.score = 0;
         this.combo = 0;
         this.coinsEarnedInRun = 0;
@@ -1367,7 +1367,11 @@
         this.isFever = false;
 
         const baseLimits = { "STANDARD": 2.4, "HYPER": 1.7, "VOID_GOD": 1.2 };
-        this.timeLimit = baseLimits[this.difficulty] || 2.4;
+        const base = baseLimits[this.difficulty] || 2.4;
+        const accelFactors = { "STANDARD": 0.88, "HYPER": 0.84, "VOID_GOD": 0.80 };
+        const factor = accelFactors[this.difficulty] || 0.88;
+
+        this.timeLimit = (Math.max(0.38, base * Math.pow(factor, this.roundNum - 1))) * this.timeSpeedMult;
         this.timeRemaining = this.timeLimit;
         this.stepStartTime = performance.now();
 
@@ -1418,7 +1422,6 @@
           const prevScore = this.score;
           this.score += pts;
 
-          // Void Coins (1 tous les 100 000)
           const coinsBefore = Math.floor(prevScore / 100000);
           const coinsAfter = Math.floor(this.score / 100000);
           if (coinsAfter > coinsBefore) {
@@ -1483,7 +1486,7 @@
         const baseLimits = { "STANDARD": 2.4, "HYPER": 1.7, "VOID_GOD": 1.2 };
         const base = baseLimits[this.difficulty] || 2.4;
 
-        this.timeLimit = Math.max(0.38, base * Math.pow(factor, this.roundNum - 1));
+        this.timeLimit = (Math.max(0.38, base * Math.pow(factor, this.roundNum - 1))) * this.timeSpeedMult;
         this.timeRemaining = this.timeLimit;
         this.currentStep = 0;
         this.stepStartTime = performance.now();
@@ -1503,9 +1506,10 @@
         }
         this.saveData();
 
-        // Envoi au vrai Cloud Leaderboard
+        // Envoi au Cloud Leaderboard
         const entry = {
           name: this.isOwner ? `👑 ${this.playerName}` : this.playerName,
+          email: this.playerEmail || "guest@anonymous.io",
           score: this.score,
           combo: this.maxCombo,
           rank: rankStr,
@@ -1579,7 +1583,6 @@
         this.phase += 0.07;
         const th = this.getTheme();
 
-        // Fever / Overdrive
         if (this.feverGauge >= 1.0 && !this.isFever) {
           this.isFever = true;
           this.addFloatingText(this.width / 2, 120, "⚡ OVERDRIVE ACTIVE (x2 POINTS) ⚡", "#ffe600", 24);
@@ -1589,7 +1592,6 @@
           if (this.feverGauge <= 0.0) this.isFever = false;
         }
 
-        // Screen Shake
         let offX = 0, offY = 0;
         if (this.shakeAmount > 0) {
           offX = (Math.random() - 0.5) * this.shakeAmount * 1.5;
@@ -1600,7 +1602,6 @@
         const cx = this.width / 2 + offX;
         const cy = this.height / 2 + offY;
 
-        // Effacer écran
         this.ctx.fillStyle = "#05030a";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.menuButtons = {};
@@ -1692,7 +1693,7 @@
         this.ctx.fillStyle = this.isOwner ? "#fbbf24" : "#e2e8f0";
         this.ctx.fillText(authBadge, this.width - 30, 36);
 
-        // Bannière d'annonce mondiale
+        // Annonce Mondiale
         if (this.globalBroadcast) {
           this.ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
           this.ctx.fillRect(0, 56, this.width, 22);
@@ -1711,7 +1712,7 @@
 
           this.ctx.font = "bold 15px Consolas";
           this.ctx.fillStyle = th.accent;
-          this.ctx.fillText("⚡ TRANSCENDENCE 3.0 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
+          this.ctx.fillText("⚡ TRANSCENDENCE 3.5 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
 
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#94a3b8";
@@ -1722,7 +1723,7 @@
           this.drawInteractiveBtn("LEADERBOARD", cx, cy + 108, 330, 48, "🏆 CLASSEMENT MONDIAL", "[VRAIS JOUEURS CLOUD]", th.secondary);
 
           if (this.isOwner) {
-            this.drawInteractiveBtn("ADMIN_PANEL", cx, cy + 164, 330, 48, "👑 PANNEAU STAFF / OWNER", "[GESTION COMPLETE]", "#fbbf24");
+            this.drawInteractiveBtn("ADMIN_PANEL", cx, cy + 164, 330, 48, "👑 SUPER-PANNEAU STAFF", "[CONTRÔLES TOTAL OWNER]", "#fbbf24");
             this.drawInteractiveBtn("SETTINGS", cx - 85, cy + 220, 155, 42, "⚙️ PARAMÈTRES", "", "#64748b");
             this.drawInteractiveBtn("STATS", cx + 85, cy + 220, 155, 42, "📊 STATISTIQUES", "", "#64748b");
           } else {
@@ -1793,7 +1794,7 @@
 
           this.drawInteractiveBtn("BACK_MENU", cx, cy + 240, 120, 38, "RETOUR", "", "#ef4444");
 
-        // --- LEADERBOARD MONDIAL (CLOUD LIVE) ---
+        // --- LEADERBOARD MONDIAL CLOUD ---
         } else if (this.state === "LEADERBOARD") {
           this.drawGlassCard(cx, cy, 640, 560, th.secondary);
           this.ctx.textAlign = "center";
@@ -1803,7 +1804,7 @@
 
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#94a3b8";
-          this.ctx.fillText(`CONNECTÉ : ${this.isOwner ? '👑 ' : ''}${this.playerName}  |  CLASSEMENT SYNCHRONISÉ MONDIALEMENT`, cx, cy - 208);
+          this.ctx.fillText(`CONNECTÉ : ${this.isOwner ? '👑 ' : ''}${this.playerName} (${this.playerEmail || 'Compte Invité'})`, cx, cy - 208);
 
           this.leaderboard.slice(0, 6).forEach((item, idx) => {
             const rowY = cy - 165 + idx * 56;
@@ -1912,7 +1913,6 @@
           const recent = this.reactionTimes.slice(-5);
           const avgReact = recent.length ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length) : 0;
 
-          // HUD Live
           this.ctx.textAlign = "center";
           this.ctx.font = "24px Impact";
           this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
@@ -1925,14 +1925,12 @@
           this.ctx.fillStyle = "#ffffff";
           this.ctx.fillText(`COMBO: x${this.combo}  |  ${cps.toFixed(1)} CPS  |  ${avgReact} ms`, cx, 75);
 
-          // Jauge Overdrive
           const fgW = 260;
           this.ctx.strokeStyle = th.secondary;
           this.ctx.strokeRect(cx - fgW / 2, 95, fgW, 7);
           this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
           this.ctx.fillRect(cx - fgW / 2, 95, fgW * this.feverGauge, 7);
 
-          // Timer Circular Arc
           const timerR = Math.min(190, this.width * 0.22);
           const ratio = Math.max(0.0, this.timeRemaining / this.timeLimit);
           const gaugeCol = ratio > 0.4 ? th.primary : (ratio > 0.2 ? "#ffe600" : "#ef4444");
@@ -1943,7 +1941,6 @@
           this.ctx.arc(cx, cy, timerR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ratio, false);
           this.ctx.stroke();
 
-          // Orbs Disposition
           this.buttons = {};
           const n = this.sequence.length;
           const radiusLayout = Math.min(235, this.width * 0.35);
@@ -1960,7 +1957,6 @@
             this.buttons[char] = { x: bx, y: by, r: 38 };
           }
 
-          // Faisceaux Lasers
           for (let i = 0; i < coords.length - 1; i++) {
             this.ctx.strokeStyle = this.isFever ? "#ffe600" : (i >= this.currentStep ? "rgba(255,255,255,0.08)" : th.primary);
             this.ctx.lineWidth = 2.5;
@@ -1970,7 +1966,6 @@
             this.ctx.stroke();
           }
 
-          // Orbes P-O-U-I-C
           for (let i = 0; i < n; i++) {
             const char = this.sequence[i];
             const orb = coords[i];
@@ -2002,7 +1997,6 @@
             this.ctx.fillText(char, orb.x, orb.y);
           }
 
-          // Action Centrale
           if (this.state === "PLAYING_LETTERS") {
             const targetChar = this.sequence[this.currentStep];
             this.ctx.font = "bold 32px Impact";
@@ -2065,7 +2059,6 @@
           }
         }
 
-        // Barre d'aide
         this.ctx.textAlign = "center";
         this.ctx.font = "11px Consolas";
         this.ctx.fillStyle = "#64748b";
