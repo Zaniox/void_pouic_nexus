@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VOID POUIC NEXUS : TRANSCENDENCE — Web Edition</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #03010b;
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: #fff;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: crosshair;
+    }
+    #audio-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 1, 11, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .overlay-title {
+      font-family: 'Impact', sans-serif;
+      font-size: 3rem;
+      color: #00f0ff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .overlay-subtitle {
+      font-size: 1.1rem;
+      color: #ff007f;
+      letter-spacing: 3px;
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .start-btn {
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #ff007f, #00f0ff);
+      color: #fff;
+      font-family: 'Impact', sans-serif;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 4px;
+      letter-spacing: 2px;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .start-btn:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 40px rgba(255, 0, 127, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="audio-overlay">
+    <div class="overlay-title">⚡ VOID POUIC NEXUS ⚡</div>
+    <div class="overlay-subtitle">TRANSCENDENCE WEB EDITION // BY @ZANIOXX_OFF</div>
+    <button class="start-btn" id="init-btn">INITIALISER LE SYSTÈME</button>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+    // =====================================================================
+    // 1. MOTEUR AUDIO SPATIALISÉ WEBAUDIO (Zero Asset externe)
+    // =====================================================================
+    class WebAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.volume = 0.85;
+        this.isMuted = false;
+        this.vizLevel = 0.0;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      setVolume(val) {
+        this.volume = Math.max(0.0, Math.min(1.0, val));
+      }
+
+      toggleMute() {
+        this.isMuted = !this.isMuted;
+      }
+
+      play(name, pan = 0.0) {
+        if (!this.ctx || this.isMuted || this.volume <= 0.001) return;
+        this.vizLevel = Math.min(1.0, this.vizLevel + 0.85);
+
+        const now = this.ctx.currentTime;
+        const master = this.ctx.createGain();
+        master.gain.value = this.volume;
+
+        // Panning stéréo
+        let panner = null;
+        if (this.ctx.createStereoPanner) {
+          panner = this.ctx.createStereoPanner();
+          panner.pan.value = Math.max(-1.0, Math.min(1.0, pan));
+          master.connect(panner);
+          panner.connect(this.ctx.destination);
+        } else {
+          master.connect(this.ctx.destination);
+        }
+
+        if (name === 'pouic') {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+
+          osc1.frequency.setValueAtTime(320, now);
+          osc1.frequency.exponentialRampToValueAtTime(1500, now + 0.15);
+          osc2.frequency.setValueAtTime(640, now);
+          osc2.frequency.exponentialRampToValueAtTime(3000, now + 0.15);
+
+          gain.gain.setValueAtTime(0.7, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(master);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.16);
+          osc2.stop(now + 0.16);
+
+        } else if (name === 'slam') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(32, now + 0.35);
+
+          gain.gain.setValueAtTime(0.9, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.36);
+
+        } else if (name.startsWith('note_')) {
+          const idx = parseInt(name.split('_')[1], 10) || 0;
+          const freqs = [523.25, 587.33, 659.25, 783.99, 880.00];
+          const f = freqs[idx] || 523.25;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now);
+
+          gain.gain.setValueAtTime(0.65, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.23);
+
+        } else if (name === 'perfect') {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(1046.5, now);
+          osc2.frequency.setValueAtTime(2093.0, now);
+
+          gain.gain.setValueAtTime(0.7, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(master);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.21);
+          osc2.stop(now + 0.21);
+
+        } else if (name === 'ui_click') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1400, now);
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.05);
+
+        } else if (name === 'fail') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(60, now + 0.3);
+
+          gain.gain.setValueAtTime(0.6, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+          osc.connect(gain);
+          gain.connect(master);
+          osc.start(now);
+          osc.stop(now + 0.31);
+        }
+      }
+    }
+
+    // =====================================================================
+    // 2. THÈMES CYBERPUNK
+    // =====================================================================
+    const THEMES = [
+      {
+        id: "amethyst",
+        name: "VOID AMETHYST",
+        primary: "#00f0ff",
+        accent: "#ff007f",
+        secondary: "#a855f7",
+        bg_glow: "#16022c",
+        stars: "#d8b4fe",
+        card: "#0c021b"
+      },
+      {
+        id: "cyber_ice",
+        name: "CYBER ICE",
+        primary: "#38bdf8",
+        accent: "#00f7ff",
+        secondary: "#818cf8",
+        bg_glow: "#02172b",
+        stars: "#bae6fd",
+        card: "#020f1e"
+      },
+      {
+        id: "solar_flare",
+        name: "SOLAR FLARE",
+        primary: "#fbbf24",
+        accent: "#ff0055",
+        secondary: "#f97316",
+        bg_glow: "#26040a",
+        stars: "#fef08a",
+        card: "#1d0408"
+      },
+      {
+        id: "matrix_neon",
+        name: "MATRIX NEON",
+        primary: "#22c55e",
+        accent: "#00ffcc",
+        secondary: "#4ade80",
+        bg_glow: "#021c0c",
+        stars: "#bbf7d0",
+        card: "#011509"
+      }
+    ];
+
+    // =====================================================================
+    // 3. SYSTÈMES VISUELS (Étoiles, Particules, Textes Flottants)
+    // =====================================================================
+    class StarDust {
+      constructor(w, h) {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = 1.0 + Math.random() * 2.0;
+        this.speed = 0.15 + Math.random() * 0.45;
+        this.twinkle = Math.random() * Math.PI * 2;
+      }
+      update(w, h) {
+        this.y -= this.speed;
+        if (this.y < 0) {
+          this.y = h;
+          this.x = Math.random() * w;
+        }
+        this.twinkle += 0.04;
+      }
+    }
+
+    class FloatingScore {
+      constructor(x, y, text, color, size = 24) {
+        this.x = x;
+        this.y = y;
+        this.text = text;
+        this.color = color;
+        this.size = size;
+        this.life = 1.0;
+        this.vy = -3.2;
+      }
+      update() {
+        this.y += this.vy;
+        this.vy *= 0.94;
+        this.life -= 0.03;
+      }
+    }
+
+    class Spark {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 3 + Math.random() * 9;
+        this.vx = Math.cos(ang) * spd;
+        this.vy = Math.sin(ang) * spd;
+        this.life = 1.0;
+        this.decay = 0.02 + Math.random() * 0.03;
+        this.color = color;
+        this.size = 3 + Math.random() * 5;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.93;
+        this.vy *= 0.93;
+        this.life -= this.decay;
+        this.size = Math.max(0.5, this.size * 0.96);
+      }
+    }
+
+    class ShockRing {
+      constructor(x, y, color, maxR = 220) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = 12;
+        this.maxRadius = maxR;
+        this.life = 1.0;
+      }
+      update() {
+        this.radius += 14;
+        this.life = Math.max(0.0, 1.0 - (this.radius / this.maxRadius));
+      }
+    }
+
+    // =====================================================================
+    // 4. JEU PRINCIPAL
+    // =====================================================================
+    class VoidGame {
+      constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.audio = new WebAudioEngine();
+
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.resize();
+
+        window.addEventListener('resize', () => this.resize());
+
+        this.themeIdx = 0;
+        this.difficulty = "STANDARD";
+        this.particlesEnabled = true;
+        this.shakeEnabled = true;
+
+        this.state = "MENU"; // MENU, SETTINGS, STATS, COUNTDOWN, PLAYING_LETTERS, POUIC_SLAM, GAMEOVER
+        this.sequence = ['P', 'O', 'U', 'I', 'C'];
+        const pans = [-0.8, -0.4, 0.0, 0.4, 0.8];
+        this.pans = pans;
+
+        this.currentStep = 0;
+        this.roundNum = 1;
+        this.score = 0;
+        this.highScore = 0;
+        this.totalGames = 0;
+        this.combo = 0;
+        this.maxCombo = 0;
+        this.perfectCount = 0;
+        this.totalPouics = 0;
+
+        this.feverGauge = 0.0;
+        this.isFever = false;
+
+        this.timeLimit = 2.4;
+        this.timeRemaining = 2.4;
+        this.lastTick = performance.now();
+        this.stepStartTime = performance.now();
+        this.reactionTimes = [];
+        this.clicksHistory = [];
+        this.phase = 0.0;
+        this.shakeAmount = 0;
+
+        this.stars = Array.from({ length: 95 }, () => new StarDust(this.width, this.height));
+        this.sparks = [];
+        this.shockRings = [];
+        this.floatingScores = [];
+        this.buttons = {};
+        this.menuButtons = {};
+
+        this.mousePos = { x: this.width / 2, y: this.height / 2 };
+        this.mouseTrail = [];
+
+        this.bindEvents();
+        requestAnimationFrame((t) => this.loop(t));
+      }
+
+      getTheme() {
+        return THEMES[this.themeIdx];
+      }
+
+      cycleTheme() {
+        this.themeIdx = (this.themeIdx + 1) % THEMES.length;
+        this.audio.play('ui_click');
+      }
+
+      resize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+      }
+
+      triggerShake(amount) {
+        if (this.shakeEnabled) {
+          this.shakeAmount = amount;
+        }
+      }
+
+      spawnBurst(x, y, color, count = 30, isSlam = false) {
+        if (!this.particlesEnabled) return;
+        for (let i = 0; i < count; i++) {
+          this.sparks.push(new Spark(x, y, color));
+        }
+        this.shockRings.push(new ShockRing(x, y, color, isSlam ? 320 : 200));
+      }
+
+      addFloatingText(x, y, text, color, size = 24) {
+        this.floatingScores.push(new FloatingScore(x, y, text, color, size));
+      }
+
+      bindEvents() {
+        window.addEventListener('mousemove', (e) => {
+          this.mousePos = { x: e.clientX, y: e.clientY };
+          this.mouseTrail.push({ x: e.clientX, y: e.clientY, life: 1.0 });
+        });
+
+        window.addEventListener('pointerdown', (e) => {
+          this.handleClick(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('keydown', (e) => {
+          this.handleKey(e);
+        });
+      }
+
+      handleKey(e) {
+        const key = e.key.toUpperCase();
+        this.clicksHistory.push(performance.now());
+
+        if (e.key === "Escape") {
+          if (this.state === "SETTINGS" || this.state === "STATS") {
+            this.state = "MENU";
+            this.audio.play('ui_click');
+          } else if (["PLAYING_LETTERS", "POUIC_SLAM", "GAMEOVER"].includes(this.state)) {
+            this.state = "MENU";
+            this.audio.play('ui_click');
+          }
+          return;
+        }
+
+        if (e.key === "t" || e.key === "T") {
+          this.cycleTheme();
+          return;
+        }
+
+        if (e.key === "m" || e.key === "M") {
+          this.audio.toggleMute();
+          return;
+        }
+
+        if (this.state === "PLAYING_LETTERS") {
+          if (this.sequence.includes(key)) {
+            this.validateStep(key);
+          }
+        } else if (this.state === "POUIC_SLAM") {
+          if (e.code === "Space" || e.key === "Enter" || key === 'P') {
+            this.triggerPouicSlam();
+          }
+        } else if (this.state === "MENU") {
+          if (e.key === "Enter") {
+            this.startCountdown();
+          } else if (e.key === "s" || e.key === "S") {
+            this.state = "SETTINGS";
+            this.audio.play('ui_click');
+          }
+        } else if (this.state === "GAMEOVER") {
+          if (e.code === "Space" || e.key === "Enter") {
+            this.startCountdown();
+          }
+        }
+      }
+
+      handleClick(mx, my) {
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        this.clicksHistory.push(performance.now());
+
+        if (this.state === "MENU") {
+          for (let [tag, btn] of Object.entries(this.menuButtons)) {
+            if (mx >= btn.x1 && mx <= btn.x2 && my >= btn.y1 && my <= btn.y2) {
+              this.audio.play('ui_click');
+              if (tag === "PLAY") this.startCountdown();
+              else if (tag === "SETTINGS") this.state = "SETTINGS";
+              else if (tag === "STATS") this.state = "STATS";
+              return;
+            }
+          }
+        } else if (this.state === "SETTINGS") {
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 120 && my <= cy - 65) {
+            this.cycleTheme();
+            return;
+          }
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy - 40 && my <= cy + 15) {
+            const diffs = ["STANDARD", "HYPER", "VOID_GOD"];
+            const idx = (diffs.indexOf(this.difficulty) + 1) % diffs.length;
+            this.difficulty = diffs[idx];
+            this.audio.play('ui_click');
+            return;
+          }
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy + 40 && my <= cy + 95) {
+            this.particlesEnabled = !this.particlesEnabled;
+            this.audio.play('ui_click');
+            return;
+          }
+          if (mx >= cx - 190 && mx <= cx + 190 && my >= cy + 120 && my <= cy + 175) {
+            this.shakeEnabled = !this.shakeEnabled;
+            this.audio.play('ui_click');
+            return;
+          }
+          if (mx >= cx - 110 && mx <= cx + 110 && my >= cy + 225 && my <= cy + 275) {
+            this.audio.play('ui_click');
+            this.state = "MENU";
+            return;
+          }
+        } else if (this.state === "STATS") {
+          if (mx >= cx - 110 && mx <= cx + 110 && my >= cy + 225 && my <= cy + 275) {
+            this.audio.play('ui_click');
+            this.state = "MENU";
+            return;
+          }
+        } else if (this.state === "PLAYING_LETTERS") {
+          for (let [char, orb] of Object.entries(this.buttons)) {
+            if (Math.hypot(mx - orb.x, my - orb.y) <= orb.r + 20) {
+              this.validateStep(char);
+              break;
+            }
+          }
+        } else if (this.state === "POUIC_SLAM") {
+          if (Math.hypot(mx - cx, my - cy) <= 130) {
+            this.triggerPouicSlam();
+          }
+        } else if (this.state === "GAMEOVER") {
+          if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 110 && my <= cy + 185) {
+            this.audio.play('ui_click');
+            this.startCountdown();
+          } else if (mx >= cx - 160 && mx <= cx + 160 && my >= cy + 200 && my <= cy + 250) {
+            this.audio.play('ui_click');
+            this.state = "MENU";
+          }
+        }
+      }
+
+      startCountdown() {
+        this.state = "COUNTDOWN";
+        this.stepStartTime = performance.now();
+        this.audio.play('note_2', 0.0);
+      }
+
+      startGame() {
+        this.state = "PLAYING_LETTERS";
+        this.currentStep = 0;
+        this.roundNum = 1;
+        this.score = 0;
+        this.combo = 0;
+        this.totalGames++;
+        this.feverGauge = 0.0;
+        this.isFever = false;
+
+        const baseLimits = { "STANDARD": 2.4, "HYPER": 1.7, "VOID_GOD": 1.2 };
+        this.timeLimit = baseLimits[this.difficulty] || 2.4;
+        this.timeRemaining = this.timeLimit;
+        this.stepStartTime = performance.now();
+
+        this.audio.play('slam');
+        this.audio.play('pouic');
+        this.triggerShake(14);
+        const th = this.getTheme();
+        this.spawnBurst(this.width / 2, this.height / 2, th.accent, 50);
+        this.addFloatingText(this.width / 2, this.height / 2 - 110, "⚡ LINK ESTABLISHED ⚡", th.primary, 32);
+      }
+
+      validateStep(char) {
+        const target = this.sequence[this.currentStep];
+        if (char === target) {
+          const elapsed = performance.now() - this.stepStartTime;
+          this.reactionTimes.push(Math.round(elapsed));
+          this.stepStartTime = performance.now();
+          const th = this.getTheme();
+
+          let rating = "GOOD";
+          let rCol = "#ffffff";
+          let mult = 1.0;
+
+          if (elapsed < 200) {
+            rating = "PERFECT!";
+            rCol = "#ffe600";
+            mult = 3.0;
+            this.perfectCount++;
+            this.feverGauge = Math.min(1.0, this.feverGauge + 0.25);
+            this.audio.play('perfect', 0.0);
+          } else if (elapsed < 380) {
+            rating = "GREAT!";
+            rCol = th.primary;
+            mult = 2.0;
+            this.feverGauge = Math.min(1.0, this.feverGauge + 0.15);
+            this.audio.play(`note_${this.currentStep}`, this.pans[this.currentStep]);
+          } else {
+            this.feverGauge = Math.min(1.0, this.feverGauge + 0.08);
+            this.audio.play(`note_${this.currentStep}`, this.pans[this.currentStep]);
+          }
+
+          this.combo++;
+          if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+
+          const feverMult = this.isFever ? 2.0 : 1.0;
+          const pts = Math.round(100 * this.roundNum * mult * feverMult);
+          this.score += pts;
+
+          const orb = this.buttons[char];
+          if (orb) {
+            this.spawnBurst(orb.x, orb.y, this.isFever ? "#ffe600" : th.primary, 22);
+            this.addFloatingText(orb.x, orb.y - 38, `${rating} +${pts}`, rCol, 20);
+          }
+
+          this.currentStep++;
+          if (this.currentStep >= this.sequence.length) {
+            this.state = "POUIC_SLAM";
+            this.timeRemaining = Math.max(0.65, this.timeLimit * 0.6);
+          } else {
+            this.timeRemaining = this.timeLimit;
+          }
+        } else {
+          this.gameOver();
+        }
+      }
+
+      triggerPouicSlam() {
+        this.audio.play('pouic');
+        this.audio.play('slam');
+        this.triggerShake(22);
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const th = this.getTheme();
+        this.totalPouics++;
+
+        const slamPts = 600 * this.combo * (this.isFever ? 2 : 1);
+        this.score += slamPts;
+        this.spawnBurst(cx, cy, this.isFever ? "#ffe600" : th.accent, 80, true);
+        this.addFloatingText(cx, cy - 80, `💥 POUIC SLAM ! +${slamPts}`, "#ffe600", 36);
+
+        this.roundNum++;
+        const accelFactors = { "STANDARD": 0.88, "HYPER": 0.84, "VOID_GOD": 0.80 };
+        const factor = accelFactors[this.difficulty] || 0.88;
+        const baseLimits = { "STANDARD": 2.4, "HYPER": 1.7, "VOID_GOD": 1.2 };
+        const base = baseLimits[this.difficulty] || 2.4;
+
+        this.timeLimit = Math.max(0.38, base * Math.pow(factor, this.roundNum - 1));
+        this.timeRemaining = this.timeLimit;
+        this.currentStep = 0;
+        this.stepStartTime = performance.now();
+        this.state = "PLAYING_LETTERS";
+      }
+
+      gameOver() {
+        this.audio.play('fail');
+        this.triggerShake(26);
+        this.state = "GAMEOVER";
+        this.isFever = false;
+        if (this.score > this.highScore) this.highScore = this.score;
+        this.spawnBurst(this.width / 2, this.height / 2, "#ff0055", 85);
+      }
+
+      calculateCPS() {
+        const now = performance.now();
+        this.clicksHistory = this.clicksHistory.filter(t => (now - t) <= 2000);
+        return this.clicksHistory.length / 2.0;
+      }
+
+      drawGlassCard(x, y, w, h, borderCol, fillCol = null) {
+        const th = this.getTheme();
+        const fill = fillCol || th.card;
+        this.ctx.save();
+        this.ctx.fillStyle = fill;
+        this.ctx.strokeStyle = borderCol;
+        this.ctx.lineWidth = 2;
+        this.ctx.shadowBlur = 15;
+        this.ctx.shadowColor = borderCol;
+        this.ctx.strokeRect(x - w / 2, y - h / 2, w, h);
+        this.ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        this.ctx.restore();
+      }
+
+      drawInteractiveBtn(tag, x, y, w, h, title, subtitle = "", borderCol = "#00f0ff") {
+        const mx = this.mousePos.x;
+        const my = this.mousePos.y;
+        const isHover = (mx >= x - w / 2 && mx <= x + w / 2 && my >= y - h / 2 && my <= y + h / 2);
+        const th = this.getTheme();
+        const col = isHover ? th.accent : borderCol;
+
+        this.menuButtons[tag] = { x1: x - w / 2, y1: y - h / 2, x2: x + w / 2, y2: y + h / 2 };
+
+        this.ctx.save();
+        this.ctx.fillStyle = isHover ? "#1e0438" : th.card;
+        this.ctx.strokeStyle = col;
+        this.ctx.lineWidth = isHover ? 3 : 2;
+        this.ctx.shadowBlur = isHover ? 20 : 8;
+        this.ctx.shadowColor = col;
+        this.ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        this.ctx.strokeRect(x - w / 2, y - h / 2, w, h);
+
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        if (subtitle) {
+          this.ctx.font = "bold 20px Impact";
+          this.ctx.fillStyle = "#ffffff";
+          this.ctx.fillText(title, x, y - 10);
+
+          this.ctx.font = "bold 11px Consolas";
+          this.ctx.fillStyle = th.primary;
+          this.ctx.fillText(subtitle, x, y + 16);
+        } else {
+          this.ctx.font = "bold 22px Impact";
+          this.ctx.fillStyle = "#ffffff";
+          this.ctx.fillText(title, x, y);
+        }
+        this.ctx.restore();
+      }
+
+      loop(now) {
+        const dt = (now - this.lastTick) / 1000;
+        this.lastTick = now;
+        this.phase += 0.08;
+        const th = this.getTheme();
+
+        // Fever / Overdrive
+        if (this.feverGauge >= 1.0 && !this.isFever) {
+          this.isFever = true;
+          this.addFloatingText(this.width / 2, 120, "⚡ OVERDRIVE ACTIVE (x2 POINTS) ⚡", "#ffe600", 26);
+        }
+        if (this.isFever) {
+          this.feverGauge = Math.max(0.0, this.feverGauge - dt * 0.15);
+          if (this.feverGauge <= 0.0) this.isFever = false;
+        }
+
+        // Screen Shake
+        let offX = 0, offY = 0;
+        if (this.shakeAmount > 0) {
+          offX = (Math.random() - 0.5) * this.shakeAmount * 2;
+          offY = (Math.random() - 0.5) * this.shakeAmount * 2;
+          this.shakeAmount *= 0.85;
+        }
+
+        const cx = this.width / 2 + offX;
+        const cy = this.height / 2 + offY;
+
+        // Clear Background
+        this.ctx.fillStyle = "#03010b";
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.menuButtons = {};
+
+        // 1. Living Nebula Glow
+        const pulse = (Math.sin(this.phase * 0.5) + 1.0) * 0.5;
+        const rGlow = 380 + pulse * 60;
+        const grad = this.ctx.createRadialGradient(cx, cy, 20, cx, cy, rGlow);
+        grad.addColorStop(0, th.bg_glow);
+        grad.addColorStop(1, "transparent");
+        this.ctx.fillStyle = grad;
+        this.ctx.beginPath();
+        this.ctx.arc(cx, cy, rGlow, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Stars Cosmos
+        for (let s of this.stars) {
+          s.update(this.width, this.height);
+          const alpha = (Math.sin(s.twinkle) + 1.0) * 0.5;
+          if (alpha > 0.15) {
+            this.ctx.fillStyle = th.stars;
+            this.ctx.globalAlpha = alpha;
+            this.ctx.beginPath();
+            this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
+          }
+        }
+
+        // 2. Audio Visualizer Equalizer
+        this.audio.vizLevel *= 0.92;
+        const numBars = 36;
+        const bw = this.width / numBars;
+        for (let i = 0; i < numBars; i++) {
+          const waveH = (Math.sin(this.phase * 2.5 + i * 0.35) + 1.0) * 0.5;
+          const bh = 4 + (this.audio.vizLevel * 75.0 * waveH);
+          const bx = i * bw;
+          this.ctx.fillStyle = this.isFever ? "#ffe600" : (i % 2 === 0 ? th.primary : th.accent);
+          this.ctx.fillRect(bx + 2, this.height - bh, bw - 4, bh);
+        }
+
+        // 3. Shock Rings & Sparks
+        for (let i = this.shockRings.length - 1; i >= 0; i--) {
+          const w = this.shockRings[i];
+          w.update();
+          if (w.life <= 0) {
+            this.shockRings.splice(i, 1);
+          } else {
+            this.ctx.strokeStyle = w.color;
+            this.ctx.globalAlpha = w.life;
+            this.ctx.lineWidth = Math.max(1, 4 * w.life);
+            this.ctx.beginPath();
+            this.ctx.arc(w.x, w.y, w.radius, 0, Math.PI * 2);
+            this.ctx.stroke();
+            this.ctx.globalAlpha = 1.0;
+          }
+        }
+
+        for (let i = this.sparks.length - 1; i >= 0; i--) {
+          const p = this.sparks[i];
+          p.update();
+          if (p.life <= 0) {
+            this.sparks.splice(i, 1);
+          } else {
+            this.ctx.fillStyle = p.color;
+            this.ctx.globalAlpha = p.life;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
+          }
+        }
+
+        for (let i = this.floatingScores.length - 1; i >= 0; i--) {
+          const ft = this.floatingScores[i];
+          ft.update();
+          if (ft.life <= 0) {
+            this.floatingScores.splice(i, 1);
+          } else {
+            this.ctx.fillStyle = ft.color;
+            this.ctx.globalAlpha = ft.life;
+            this.ctx.font = `bold ${Math.round(ft.size * ft.life)}px Impact`;
+            this.ctx.textAlign = "center";
+            this.ctx.fillText(ft.text, ft.x, ft.y);
+            this.ctx.globalAlpha = 1.0;
+          }
+        }
+
+        // 4. Header HUD
+        this.ctx.textAlign = "left";
+        this.ctx.font = "16px Impact";
+        this.ctx.fillStyle = th.primary;
+        this.ctx.fillText("VOID POUIC NEXUS", 25, 30);
+        this.ctx.font = "bold 11px Consolas";
+        this.ctx.fillStyle = th.accent;
+        this.ctx.fillText("by @zanioxx_off", 25, 48);
+
+        this.ctx.textAlign = "right";
+        const volTxt = this.audio.isMuted ? "🔇 MUTE" : `🔊 ${Math.round(this.audio.volume * 100)}%`;
+        this.ctx.font = "bold 13px Consolas";
+        this.ctx.fillStyle = th.primary;
+        this.ctx.fillText(volTxt, this.width - 25, 35);
+
+        // 5. Machine d'États
+        if (this.state === "MENU") {
+          this.ctx.textAlign = "center";
+          this.ctx.font = "bold 64px Impact";
+          this.ctx.fillStyle = th.primary;
+          this.ctx.shadowBlur = 25;
+          this.ctx.shadowColor = th.primary;
+          this.ctx.fillText("VOID POUIC NEXUS", cx, cy - 160);
+
+          this.ctx.shadowBlur = 10;
+          this.ctx.shadowColor = th.accent;
+          this.ctx.font = "bold 17px Consolas";
+          this.ctx.fillStyle = th.accent;
+          this.ctx.fillText("⚡ TRANSCENDENCE // BY @ZANIOXX_OFF ⚡", cx, cy - 105);
+
+          this.ctx.shadowBlur = 0;
+          this.ctx.font = "bold 12px Consolas";
+          this.ctx.fillStyle = "#94a3b8";
+          this.ctx.fillText(`MODE : ${this.difficulty}  |  THÈME : ${th.name}`, cx, cy - 65);
+
+          this.drawInteractiveBtn("PLAY", cx, cy + 5, 340, 75, "🎮 JOUER", "[CLIQUE OU APPUIS SUR ENTRÉE]", th.primary);
+          this.drawInteractiveBtn("SETTINGS", cx, cy + 95, 340, 60, "⚙️ PARAMÈTRES", "[THÈMES, AUDIO, DIFFICULTÉ]", th.secondary);
+          this.drawInteractiveBtn("STATS", cx, cy + 170, 340, 60, "📊 STATISTIQUES", "[RECORDS ET TÉLÉMÉTRIE]", th.secondary);
+
+        } else if (this.state === "SETTINGS") {
+          this.drawGlassCard(cx, cy, 540, 560, th.primary);
+          this.ctx.textAlign = "center";
+          this.ctx.font = "32px Impact";
+          this.ctx.fillStyle = th.primary;
+          this.ctx.fillText("⚙️ PARAMÈTRES DU NEXUS", cx, cy - 220);
+
+          this.drawInteractiveBtn("THEME_TOGGLE", cx, cy - 95, 380, 55, `🎨 THÈME : ${th.name}`, "[CLIQUE POUR CHANGER]", th.secondary);
+          this.drawInteractiveBtn("DIFF_TOGGLE", cx, cy - 15, 380, 55, `⚡ DIFFICULTÉ : ${this.difficulty}`, "[CLIQUE POUR CHANGER]", th.secondary);
+          this.drawInteractiveBtn("PARTICLES_TOGGLE", cx, cy + 65, 380, 55, `✨ PARTICULES : ${this.particlesEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR ACTIVER/DÉSACTIVER]", th.secondary);
+          this.drawInteractiveBtn("SHAKE_TOGGLE", cx, cy + 145, 380, 55, `📳 SECOUSSES D'ÉCRAN : ${this.shakeEnabled ? "ACTIVÉES" : "DÉSACTIVÉES"}`, "[CLIQUE POUR ACTIVER/DÉSACTIVER]", th.secondary);
+          this.drawInteractiveBtn("BACK_MENU", cx, cy + 245, 220, 48, "RETOUR", "[OU ÉCHAP]", "#ff0055");
+
+        } else if (this.state === "STATS") {
+          this.drawGlassCard(cx, cy, 560, 560, th.accent);
+          this.ctx.textAlign = "center";
+          this.ctx.font = "32px Impact";
+          this.ctx.fillStyle = th.accent;
+          this.ctx.fillText("📊 TÉLÉMÉTRIE & RECORDS", cx, cy - 220);
+
+          const recent = this.reactionTimes.slice(-20);
+          const avgReact = recent.length ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length) : 0;
+
+          const statsLines = [
+            `MEILLEUR SCORE : ${this.highScore.toLocaleString()} PTS`,
+            `PARTIES JOUÉES : ${this.totalGames}`,
+            `MAX COMBO ATTEINT : x${this.maxCombo}`,
+            `TEMPS DE RÉACTION MOYEN : ${avgReact} ms`,
+            `PERFECT TIMINGS : ${this.perfectCount}`,
+            `POUIC SLAMS RÉUSSIS : ${this.totalPouics}`
+          ];
+
+          this.ctx.font = "bold 14px Consolas";
+          this.ctx.fillStyle = "#ffffff";
+          statsLines.forEach((line, idx) => {
+            this.ctx.fillText(line, cx, cy - 145 + idx * 40);
+          });
+
+          this.drawInteractiveBtn("BACK_MENU", cx, cy + 240, 220, 48, "RETOUR", "[OU ÉCHAP]", th.primary);
+
+        } else if (this.state === "COUNTDOWN") {
+          const elapsed = (performance.now() - this.stepStartTime) / 1000;
+          const count = 3 - Math.floor(elapsed);
+          if (count > 0) {
+            this.ctx.textAlign = "center";
+            this.ctx.font = "bold 120px Impact";
+            this.ctx.fillStyle = th.primary;
+            this.ctx.shadowBlur = 30;
+            this.ctx.shadowColor = th.primary;
+            this.ctx.fillText(count, cx, cy);
+            this.ctx.shadowBlur = 0;
+            this.ctx.font = "bold 18px Consolas";
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.fillText("PREPARE YOUR REFLEXES...", cx, cy + 70);
+          } else {
+            this.startGame();
+          }
+
+        } else if (this.state === "PLAYING_LETTERS" || this.state === "POUIC_SLAM") {
+          this.timeRemaining -= dt;
+          if (this.timeRemaining <= 0) {
+            this.gameOver();
+          }
+
+          const cps = this.calculateCPS();
+          const recent = this.reactionTimes.slice(-5);
+          const avgReact = recent.length ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length) : 0;
+
+          // HUD Live
+          this.ctx.textAlign = "center";
+          this.ctx.font = "26px Impact";
+          this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
+          this.ctx.fillText(`SCORE: ${this.score.toLocaleString()}`, cx - 250, 75);
+
+          this.ctx.fillStyle = th.accent;
+          this.ctx.fillText(`CYCLE: x${this.roundNum}`, cx + 250, 75);
+
+          this.ctx.font = "bold 13px Consolas";
+          this.ctx.fillStyle = "#ffffff";
+          this.ctx.fillText(`COMBO: x${this.combo}  |  ${cps.toFixed(1)} CPS  |  ${avgReact} ms`, cx, 75);
+
+          // Jauge Overdrive
+          const fgW = 280;
+          this.ctx.strokeStyle = th.secondary;
+          this.ctx.strokeRect(cx - fgW / 2, 95, fgW, 8);
+          this.ctx.fillStyle = this.isFever ? "#ffe600" : th.primary;
+          this.ctx.fillRect(cx - fgW / 2, 95, fgW * this.feverGauge, 8);
+
+          // Timer Circular Arc
+          const timerR = Math.min(200, this.width * 0.22);
+          const ratio = Math.max(0.0, this.timeRemaining / this.timeLimit);
+          const gaugeCol = ratio > 0.4 ? th.primary : (ratio > 0.2 ? "#ffe600" : "#ff0055");
+
+          this.ctx.lineWidth = 6;
+          this.ctx.strokeStyle = gaugeCol;
+          this.ctx.beginPath();
+          this.ctx.arc(cx, cy, timerR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ratio, false);
+          this.ctx.stroke();
+
+          // Orbs Disposition
+          this.buttons = {};
+          const n = this.sequence.length;
+          const radiusLayout = Math.min(240, this.width * 0.35);
+          const startAng = -Math.PI * 0.82;
+          const endAng = -Math.PI * 0.18;
+          const coords = [];
+
+          for (let i = 0; i < n; i++) {
+            const char = this.sequence[i];
+            const ang = startAng + i * (endAng - startAng) / (n - 1);
+            const bx = cx + Math.cos(ang) * radiusLayout;
+            const by = cy + Math.sin(ang) * (radiusLayout * 0.72) + 30;
+            coords.push({ x: bx, y: by });
+            this.buttons[char] = { x: bx, y: by, r: 40 };
+          }
+
+          // Laser Interconnects
+          for (let i = 0; i < coords.length - 1; i++) {
+            this.ctx.strokeStyle = this.isFever ? "#ffe600" : (i >= this.currentStep ? "#3a0f66" : th.primary);
+            this.ctx.lineWidth = 3;
+            this.ctx.beginPath();
+            this.ctx.moveTo(coords[i].x, coords[i].y);
+            this.ctx.lineTo(coords[i + 1].x, coords[i + 1].y);
+            this.ctx.stroke();
+          }
+
+          // Draw Nodes
+          for (let i = 0; i < n; i++) {
+            const char = this.sequence[i];
+            const orb = coords[i];
+            const isTarget = (i === this.currentStep) && (this.state === "PLAYING_LETTERS");
+            const isDone = (i < this.currentStep);
+
+            if (isTarget) {
+              const pulseT = Math.sin(this.phase * 2.2) * 6;
+              this.ctx.strokeStyle = th.accent;
+              this.ctx.lineWidth = 2;
+              this.ctx.beginPath();
+              this.ctx.arc(orb.x, orb.y, 40 + 10 + pulseT, 0, Math.PI * 2);
+              this.ctx.stroke();
+            }
+
+            this.ctx.fillStyle = isDone ? th.primary : (isTarget ? th.card : "#06010d");
+            this.ctx.strokeStyle = isTarget ? "#ffffff" : (isDone ? th.primary : th.secondary);
+            this.ctx.lineWidth = 2;
+
+            this.ctx.beginPath();
+            this.ctx.arc(orb.x, orb.y, 40, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = isDone ? "#000000" : "#ffffff";
+            this.ctx.font = "bold 28px Impact";
+            this.ctx.textAlign = "center";
+            this.ctx.textBaseline = "middle";
+            this.ctx.fillText(char, orb.x, orb.y);
+          }
+
+          // Center Action
+          if (this.state === "PLAYING_LETTERS") {
+            const targetChar = this.sequence[this.currentStep];
+            this.ctx.font = "bold 34px Impact";
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.fillText(`FRAPPE : ${targetChar}`, cx, cy);
+          } else if (this.state === "POUIC_SLAM") {
+            const pulseSlam = Math.sin(this.phase * 3.0) * 8;
+            this.ctx.fillStyle = th.accent;
+            this.ctx.strokeStyle = "#ffe600";
+            this.ctx.lineWidth = 3;
+            this.ctx.beginPath();
+            this.ctx.arc(cx, cy, 75 + pulseSlam, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = "#ffffff";
+            this.ctx.font = "bold 24px Impact";
+            this.ctx.fillText("POUIC", cx, cy - 12);
+            this.ctx.fillText("SLAM!", cx, cy + 16);
+          }
+
+        } else if (this.state === "GAMEOVER") {
+          this.ctx.textAlign = "center";
+          this.ctx.font = "bold 48px Impact";
+          this.ctx.fillStyle = "#ff0055";
+          this.ctx.fillText("SURCHAUFFE DU SYSTÈME", cx, cy - 130);
+
+          this.ctx.font = "bold 20px Consolas";
+          this.ctx.fillStyle = th.primary;
+          this.ctx.fillText(`SCORE FINAL : ${this.score.toLocaleString()}   |   RECORD : ${this.highScore.toLocaleString()}`, cx, cy - 65);
+
+          const rankStr = this.roundNum >= 14 ? "SSS VOID EMPEROR" : (this.roundNum >= 9 ? "S NEXUS MASTER" : (this.roundNum >= 5 ? "A SPEED RUNNER" : "B NOVICE"));
+          this.ctx.font = "bold 14px Consolas";
+          this.ctx.fillStyle = "#ffe600";
+          this.ctx.fillText(`RANG ÉVALUÉ : ${rankStr} (MAX COMBO: x${this.maxCombo})`, cx, cy - 15);
+
+          this.drawInteractiveBtn("RETRY", cx, cy + 145, 300, 75, "🔄 REJOUER", "[CLIQUE OU ENTRÉE]", th.primary);
+          this.drawInteractiveBtn("MENU_BTN", cx, cy + 225, 300, 50, "🏠 MENU PRINCIPAL", "", th.secondary);
+        }
+
+        // Mouse Trail
+        for (let i = this.mouseTrail.length - 1; i >= 0; i--) {
+          const pt = this.mouseTrail[i];
+          pt.life -= 0.08;
+          if (pt.life <= 0) {
+            this.mouseTrail.splice(i, 1);
+          } else {
+            this.ctx.fillStyle = th.primary;
+            this.ctx.globalAlpha = pt.life;
+            this.ctx.beginPath();
+            this.ctx.arc(pt.x, pt.y, 6 * pt.life, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
+          }
+        }
+
+        // Bottom Helper Bar
+        this.ctx.textAlign = "center";
+        this.ctx.font = "11px Consolas";
+        this.ctx.fillStyle = "#64748b";
+        this.ctx.fillText("[P][O][U][I][C] Clavier/Souris/Tactile  |  [ESPACE] Pouic Slam  |  [T] Thèmes  |  [M] Muet  •  by @zanioxx_off", this.width / 2, this.height - 18);
+
+        requestAnimationFrame((t) => this.loop(t));
+      }
+    }
+
+    // Initialisation
+    const game = new VoidGame();
+    document.getElementById('init-btn').addEventListener('click', () => {
+      game.audio.init();
+      game.audio.play('ui_click');
+      document.getElementById('audio-overlay').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
