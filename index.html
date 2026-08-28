@@ -489,18 +489,15 @@
     // =========================================================================
     class CloudBackend {
       constructor() {
-        this.primaryUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_lb_v55";
-        this.eventUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_evt_v55";
-        this.bcUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_bc_v55";
-
-        this.localLbKey = "void_leaderboard_v55";
+        this.masterUrl = "https://api.restful-api.dev/objects/ff8081819ff5b11001a04705a5ac41a8";
+        this.localLbKey = "void_leaderboard_v60";
         this.lastEvtId = null;
         this.lastBcId = null;
         this.onEvent = null;
         this.onBroadcast = null;
         this.pollTimer = null;
+        this.cachedData = { scores: "[]", event: "", eventLabel: "", eventId: "", broadcast: "", broadcastId: "" };
 
-        // Synchronisation locale multi-onglets immédiate
         if (typeof BroadcastChannel !== 'undefined') {
           this.localChannel = new BroadcastChannel('void_nexus_global_sync');
           this.localChannel.onmessage = (e) => {
@@ -512,31 +509,39 @@
 
       startPolling() {
         this.poll(true).then(() => {
-          this.pollTimer = setInterval(() => this.poll(false), 2000);
+          this.pollTimer = setInterval(() => this.poll(false), 1500);
         });
       }
 
       async poll(silent) {
-        // 1. Polling Événements
         try {
-          const r = await fetch(this.eventUrl + '?t=' + Date.now(), { cache: 'no-store' });
+          const r = await fetch(this.masterUrl, { cache: 'no-store' });
           if (r.ok) {
-            const d = await r.json();
-            if (d && d.id && d.id !== this.lastEvtId) {
-              this.lastEvtId = d.id;
-              if (!silent && d.type && this.onEvent) this.onEvent(d.type, d.label);
-            }
-          }
-        } catch (e) {}
+            const res = await r.json();
+            if (res && res.data) {
+              const d = res.data;
+              this.cachedData = { ...d };
 
-        // 2. Polling Annonces
-        try {
-          const r2 = await fetch(this.bcUrl + '?t=' + Date.now(), { cache: 'no-store' });
-          if (r2.ok) {
-            const d2 = await r2.json();
-            if (d2 && d2.id && d2.id !== this.lastBcId) {
-              this.lastBcId = d2.id;
-              if (!silent && d2.msg && this.onBroadcast) this.onBroadcast(d2.msg);
+              // Check Event
+              if (d.eventId && d.eventId !== this.lastEvtId) {
+                this.lastEvtId = d.eventId;
+                if (!silent && d.event && this.onEvent) {
+                  this.onEvent(d.event, d.eventLabel);
+                }
+              }
+
+              // Check Broadcast
+              if (d.broadcastId && d.broadcastId !== this.lastBcId) {
+                this.lastBcId = d.broadcastId;
+                if (!silent && d.broadcast && this.onBroadcast) {
+                  this.onBroadcast(d.broadcast);
+                }
+              }
+
+              // Cache scores
+              if (d.scores) {
+                localStorage.setItem(this.localLbKey, d.scores);
+              }
             }
           }
         } catch (e) {}
@@ -544,12 +549,15 @@
 
       async fetchLeaderboard() {
         try {
-          const r = await fetch(this.primaryUrl + '?t=' + Date.now(), { cache: 'no-store' });
+          const r = await fetch(this.masterUrl, { cache: 'no-store' });
           if (r.ok) {
-            const d = await r.json();
-            if (Array.isArray(d) && d.length) {
-              localStorage.setItem(this.localLbKey, JSON.stringify(d));
-              return d;
+            const res = await r.json();
+            if (res && res.data && res.data.scores) {
+              const parsed = JSON.parse(res.data.scores);
+              if (Array.isArray(parsed) && parsed.length) {
+                localStorage.setItem(this.localLbKey, res.data.scores);
+                return parsed;
+              }
             }
           }
         } catch (e) {}
@@ -571,9 +579,22 @@
 
         s.sort((a, b) => b.score - a.score);
         const top = s.slice(0, 20);
-        localStorage.setItem(this.localLbKey, JSON.stringify(top));
+        const scoresStr = JSON.stringify(top);
+        localStorage.setItem(this.localLbKey, scoresStr);
+
         try {
-          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(top) });
+          const payload = {
+            name: "void_pouic_nexus_sync",
+            data: {
+              ...this.cachedData,
+              scores: scoresStr
+            }
+          };
+          await fetch(this.masterUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
         } catch (e) {}
         return top;
       }
@@ -581,38 +602,89 @@
       async deleteScore(pseudo) {
         let s = await this.fetchLeaderboard();
         s = s.filter(x => !x.name.toLowerCase().includes(pseudo.toLowerCase()));
-        localStorage.setItem(this.localLbKey, JSON.stringify(s));
+        const scoresStr = JSON.stringify(s);
+        localStorage.setItem(this.localLbKey, scoresStr);
         try {
-          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(s) });
+          const payload = {
+            name: "void_pouic_nexus_sync",
+            data: {
+              ...this.cachedData,
+              scores: scoresStr
+            }
+          };
+          await fetch(this.masterUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
         } catch (e) {}
         return s;
       }
 
       async clearLeaderboard() {
         const def = [{ name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 2500000, combo: 99, rank: "SSS VOID EMPEROR", isOwner: true }];
-        localStorage.setItem(this.localLbKey, JSON.stringify(def));
+        const scoresStr = JSON.stringify(def);
+        localStorage.setItem(this.localLbKey, scoresStr);
         try {
-          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(def) });
+          const payload = {
+            name: "void_pouic_nexus_sync",
+            data: {
+              ...this.cachedData,
+              scores: scoresStr
+            }
+          };
+          await fetch(this.masterUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
         } catch (e) {}
         return def;
       }
 
       async pushEvent(type, label) {
-        const payload = { id: Date.now() + '_' + Math.random().toString(36).slice(2), type, label };
+        const evtId = 'evt_' + Date.now() + '_' + Math.random().toString(36).slice(2);
         if (this.localChannel) this.localChannel.postMessage({ type: 'EVENT', evtType: type, label });
         try {
-          await fetch(this.eventUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const payload = {
+            name: "void_pouic_nexus_sync",
+            data: {
+              ...this.cachedData,
+              event: type,
+              eventLabel: label,
+              eventId: evtId
+            }
+          };
+          this.lastEvtId = evtId;
+          await fetch(this.masterUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
         } catch (e) {}
-        return payload;
+        return { event: type, eventLabel: label, eventId: evtId };
       }
 
       async pushBroadcast(msg) {
-        const payload = { id: Date.now() + '_' + Math.random().toString(36).slice(2), msg };
+        const bcId = 'bc_' + Date.now() + '_' + Math.random().toString(36).slice(2);
         if (this.localChannel) this.localChannel.postMessage({ type: 'BROADCAST', msg });
         try {
-          await fetch(this.bcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const payload = {
+            name: "void_pouic_nexus_sync",
+            data: {
+              ...this.cachedData,
+              broadcast: msg,
+              broadcastId: bcId
+            }
+          };
+          this.lastBcId = bcId;
+          await fetch(this.masterUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
         } catch (e) {}
-        return payload;
+        return { broadcast: msg, broadcastId: bcId };
       }
     }
 
