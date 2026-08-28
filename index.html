@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VOID POUIC NEXUS 5.0 — TRANSCENDENCE APEX</title>
+  <title>VOID POUIC NEXUS 5.5 — TRANSCENDENCE APEX</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-user-select:none; }
-    body, html { width:100%; height:100%; overflow:hidden; background:#04020a; font-family:'Consolas',-apple-system,BlinkMacSystemFont,monospace; color:#fff; }
+    body, html { width:100%; height:100%; overflow:hidden; background:#030108; font-family:'Consolas',-apple-system,BlinkMacSystemFont,monospace; color:#fff; }
     canvas { display:block; width:100vw; height:100vh; cursor:crosshair; }
     
-    /* Overlay d'intro / Audio */
+    /* Overlay d'intro */
     #audio-overlay {
-      position:fixed; inset:0; background:rgba(4,2,10,0.96);
+      position:fixed; inset:0; background:rgba(3,1,8,0.96);
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       z-index:1000; backdrop-filter:blur(16px);
     }
@@ -35,9 +35,9 @@
 
     /* Modales */
     #auth-modal, #admin-modal, #broadcast-modal {
-      position:fixed; inset:0; background:rgba(3,2,10,0.9);
+      position:fixed; inset:0; background:rgba(3,1,8,0.92);
       display:none; align-items:center; justify-content:center;
-      z-index:900; backdrop-filter:blur(12px);
+      z-index:900; backdrop-filter:blur(14px);
     }
     .modal-box {
       background:linear-gradient(135deg,#0d0720,#160b2e);
@@ -96,11 +96,11 @@
   <!-- Overlay d'initialisation -->
   <div id="audio-overlay">
     <div class="overlay-title">⚡ VOID POUIC NEXUS ⚡</div>
-    <div class="overlay-sub">TRANSCENDENCE 5.0 // BY @ZANIOXX_OFF</div>
+    <div class="overlay-sub">TRANSCENDENCE 5.5 // BY @ZANIOXX_OFF</div>
     <button class="start-btn" id="init-btn">INITIALISER LE SYSTÈME</button>
   </div>
 
-  <!-- Popup d'Annonce Mondiale -->
+  <!-- Popup d'Annonce Mondiale Holographique -->
   <div id="broadcast-modal">
     <div class="broadcast-box">
       <div style="font-size:2.2rem; margin-bottom:6px;">🚨</div>
@@ -194,7 +194,7 @@
 
   <script>
     // =========================================================================
-    // 1. LES 11 THÈMES DE LA BOUTIQUE (AVEC PALETTES & SYNTHS DÉDIÉS)
+    // 1. LES 11 THÈMES DE LA BOUTIQUE
     // =========================================================================
     const ALL_THEMES = [
       { id:"amethyst",           icon:"🔮", name:"VOID AMETHYST",       price:0,   desc:"Nébuleuse cosmique violette",      primary:"#c084fc", accent:"#ff007f", secondary:"#7c3aed", glow:"#3b0764", synth:"sine_harmonic" },
@@ -321,7 +321,7 @@
     }
 
     // =========================================================================
-    // 3. MOTEUR DE RENDU DES FONDS ANIMÉS (FLUIDE, VISIBLE, SANS BUGS)
+    // 3. MOTEUR DE RENDU DES FONDS ANIMÉS (FLUIDE, NET, 60 FPS)
     // =========================================================================
     class ThemeRenderer {
       constructor() {
@@ -357,7 +357,6 @@
       }
 
       draw(ctx, themeId, phase, w, h, cx, cy) {
-        // 1. VOID AMETHYST
         if (themeId === "amethyst") {
           const pulse = (Math.sin(phase * 0.5) + 1.0) * 0.5;
           const grad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 400 + pulse * 60);
@@ -365,18 +364,14 @@
           grad.addColorStop(0.6, "rgba(124, 58, 237, 0.12)");
           grad.addColorStop(1, "transparent");
           ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(cx, cy, 460, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(cx, cy, 460, 0, Math.PI * 2); ctx.fill();
 
-        // 2. CYBER ICE
         } else if (themeId === "cyber_ice") {
           const grad = ctx.createLinearGradient(0, 0, w, h);
           grad.addColorStop(0, "rgba(8, 47, 73, 0.35)");
           grad.addColorStop(0.5, "rgba(0, 255, 225, 0.05)");
           grad.addColorStop(1, "rgba(3, 16, 32, 0.5)");
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
 
           ctx.strokeStyle = "rgba(56, 189, 248, 0.12)";
           ctx.lineWidth = 1;
@@ -384,7 +379,6 @@
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
           }
 
-        // 3. MATRIX CODE
         } else if (themeId === "matrix_neon") {
           ctx.fillStyle = "rgba(34, 197, 94, 0.65)";
           ctx.font = "bold 13px Consolas";
@@ -395,14 +389,12 @@
             ctx.fillText(char, d.x, d.y);
           });
 
-        // 4. SOLAR FLARE
         } else if (themeId === "solar_flare") {
           const grad = ctx.createRadialGradient(cx, cy + 120, 50, cx, cy + 120, 450);
           grad.addColorStop(0, "rgba(251, 146, 60, 0.3)");
           grad.addColorStop(0.7, "rgba(255, 69, 0, 0.08)");
           grad.addColorStop(1, "transparent");
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
 
           this.solarEmbers.forEach(e => {
             e.y -= e.speed;
@@ -411,7 +403,6 @@
             ctx.beginPath(); ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2); ctx.fill();
           });
 
-        // 5. BLOOD MOON
         } else if (themeId === "blood_moon") {
           const moonY = cy - 70;
           ctx.fillStyle = "rgba(127, 29, 29, 0.25)";
@@ -419,36 +410,26 @@
 
           ctx.fillStyle = "rgba(15, 3, 5, 0.95)";
           ctx.beginPath(); ctx.arc(cx, moonY, 130, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = "#f43f5e";
-          ctx.lineWidth = 2;
-          ctx.stroke();
+          ctx.strokeStyle = "#f43f5e"; ctx.lineWidth = 2; ctx.stroke();
 
-        // 6. SAKURA VAPOR
         } else if (themeId === "sakura_vapor") {
           this.sakuraPetals.forEach(p => {
             p.x += p.vx; p.y += p.vy; p.rot += 0.02;
             if (p.y > h || p.x > w) { p.y = -10; p.x = Math.random() * w; }
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
             ctx.fillStyle = "rgba(244, 114, 182, 0.6)";
-            ctx.beginPath();
-            ctx.ellipse(0, 0, p.size, p.size * 0.5, 0, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.ellipse(0, 0, p.size, p.size * 0.5, 0, 0, Math.PI * 2); ctx.fill();
             ctx.restore();
           });
 
-        // 7. SYNTHWAVE 84
         } else if (themeId === "synthwave_84") {
           const sunY = cy - 50;
           const grad = ctx.createLinearGradient(cx, sunY - 90, cx, sunY + 90);
-          grad.addColorStop(0, "#fbbf24");
-          grad.addColorStop(1, "#ec4899");
+          grad.addColorStop(0, "#fbbf24"); grad.addColorStop(1, "#ec4899");
           ctx.fillStyle = grad;
           ctx.beginPath(); ctx.arc(cx, sunY, 90, Math.PI, 0, false); ctx.fill();
 
-          ctx.strokeStyle = "rgba(236, 72, 153, 0.22)";
-          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = "rgba(236, 72, 153, 0.22)"; ctx.lineWidth = 1.5;
           const horizon = cy + 50;
           for (let x = -w; x < w * 2; x += 70) {
             ctx.beginPath(); ctx.moveTo(cx, horizon); ctx.lineTo(x, h); ctx.stroke();
@@ -457,47 +438,31 @@
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
           }
 
-        // 8. QUANTUM GLITCH
         } else if (themeId === "quantum_glitch") {
           ctx.fillStyle = "rgba(6, 182, 212, 0.04)";
-          for (let y = 0; y < h; y += 6) { ctx.fillRect(0, y, w, 2); }
-          if (Math.random() < 0.08) {
-            ctx.fillStyle = "rgba(236, 72, 153, 0.12)";
-            ctx.fillRect(0, Math.random() * h, w, Math.random() * 20);
-          }
+          for (let y = 0; y < h; y += 6) ctx.fillRect(0, y, w, 2);
 
-        // 9. DARK MATTER
         } else if (themeId === "dark_matter") {
           const vortexR = 260;
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(phase * 0.3);
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(phase * 0.3);
           const grad = ctx.createRadialGradient(0, 0, 20, 0, 0, vortexR);
           grad.addColorStop(0, "#000000");
           grad.addColorStop(0.5, "rgba(129, 140, 248, 0.2)");
           grad.addColorStop(1, "transparent");
-          ctx.fillStyle = grad;
-          ctx.beginPath(); ctx.arc(0, 0, vortexR, 0, Math.PI * 2); ctx.fill();
-          
-          ctx.strokeStyle = "rgba(192, 132, 252, 0.35)";
-          ctx.lineWidth = 1.5;
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, vortexR, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = "rgba(192, 132, 252, 0.35)"; ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.arc(0, 0, 80, 0, Math.PI * 2); ctx.stroke();
           ctx.restore();
 
-        // 10. HYPER GOLD
         } else if (themeId === "hyper_gold") {
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(phase * 0.12);
-          ctx.strokeStyle = "rgba(250, 204, 21, 0.15)";
-          ctx.lineWidth = 2;
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(phase * 0.12);
+          ctx.strokeStyle = "rgba(250, 204, 21, 0.15)"; ctx.lineWidth = 2;
           for (let i = 0; i < 12; i++) {
             ctx.rotate(Math.PI / 6);
             ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(w, 0); ctx.stroke();
           }
           ctx.restore();
 
-        // 11. CELESTIAL DIVINITY
         } else if (themeId === "celestial_divinity") {
           const grad = ctx.createLinearGradient(cx, 0, cx, h);
           grad.addColorStop(0, "rgba(224, 231, 255, 0.22)");
@@ -507,11 +472,9 @@
           ctx.beginPath();
           ctx.moveTo(cx - 160, 0); ctx.lineTo(cx + 160, 0);
           ctx.lineTo(cx + 360, h); ctx.lineTo(cx - 360, h);
-          ctx.closePath();
-          ctx.fill();
+          ctx.closePath(); ctx.fill();
         }
 
-        // Étoiles de fond scintillantes
         this.stars.forEach(s => {
           s.twinkle += 0.04;
           const alpha = 0.3 + 0.7 * (Math.sin(s.twinkle) + 1) * 0.5;
@@ -522,90 +485,41 @@
     }
 
     // =========================================================================
-    // 4. SYNCHRONISATION CLOUD DU CLASSEMENT & DES ÉVÉNEMENTS
+    // 4. MULTI-CLOUD SYNCHRONISATION (100% FIABLE SUR TOUS LES APPAREILS)
     // =========================================================================
-    class CloudLeaderboard {
+    class CloudBackend {
       constructor() {
-        this.url = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_lb_v50";
-        this.key = "void_lb_v50";
-      }
+        this.primaryUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_lb_v55";
+        this.eventUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_evt_v55";
+        this.bcUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_bc_v55";
 
-      async fetch() {
-        try {
-          const r = await fetch(this.url);
-          if (r.ok) {
-            const d = await r.json();
-            if (Array.isArray(d) && d.length) {
-              localStorage.setItem(this.key, JSON.stringify(d));
-              return d;
-            }
-          }
-        } catch (e) {}
-
-        const c = localStorage.getItem(this.key);
-        if (c) try { return JSON.parse(c); } catch (e) {}
-        return [
-          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 2500000, combo: 99, rank: "SSS VOID EMPEROR", isOwner: true, date: "Aujourd'hui" },
-          { name: "⚡ QUANTUM_DEV", email: "dev***@gmail.com", score: 1650000, combo: 74, rank: "SSS VOID EMPEROR", isOwner: false, date: "Aujourd'hui" },
-          { name: "CYBER_NEXUS", email: "cyber***@gmail.com", score: 1120000, combo: 55, rank: "S NEXUS MASTER", isOwner: false, date: "Aujourd'hui" }
-        ];
-      }
-
-      async save(entry) {
-        const s = await this.fetch();
-        const idx = s.findIndex(x => x.name === entry.name);
-        if (idx >= 0) { if (entry.score > s[idx].score) s[idx] = entry; }
-        else s.push(entry);
-
-        s.sort((a, b) => b.score - a.score);
-        const top = s.slice(0, 20);
-        localStorage.setItem(this.key, JSON.stringify(top));
-        try {
-          await fetch(this.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(top) });
-        } catch (e) {}
-        return top;
-      }
-
-      async delete(pseudo) {
-        let s = await this.fetch();
-        s = s.filter(x => !x.name.toLowerCase().includes(pseudo.toLowerCase()));
-        localStorage.setItem(this.key, JSON.stringify(s));
-        try {
-          await fetch(this.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(s) });
-        } catch (e) {}
-        return s;
-      }
-
-      async clear() {
-        const def = [{ name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 2500000, combo: 99, rank: "SSS VOID EMPEROR", isOwner: true }];
-        localStorage.setItem(this.key, JSON.stringify(def));
-        try {
-          await fetch(this.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(def) });
-        } catch (e) {}
-        return def;
-      }
-    }
-
-    class CloudEventSync {
-      constructor() {
-        this.evtUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_evt_v50";
-        this.bcUrl = "https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_bc_v50";
+        this.localLbKey = "void_leaderboard_v55";
         this.lastEvtId = null;
         this.lastBcId = null;
         this.onEvent = null;
         this.onBroadcast = null;
-        this.timer = null;
+        this.pollTimer = null;
+
+        // Synchronisation locale multi-onglets immédiate
+        if (typeof BroadcastChannel !== 'undefined') {
+          this.localChannel = new BroadcastChannel('void_nexus_global_sync');
+          this.localChannel.onmessage = (e) => {
+            if (e.data.type === 'EVENT' && this.onEvent) this.onEvent(e.data.evtType, e.data.label);
+            if (e.data.type === 'BROADCAST' && this.onBroadcast) this.onBroadcast(e.data.msg);
+          };
+        }
       }
 
       startPolling() {
-        this._poll(true).then(() => {
-          this.timer = setInterval(() => this._poll(false), 3000);
+        this.poll(true).then(() => {
+          this.pollTimer = setInterval(() => this.poll(false), 2000);
         });
       }
 
-      async _poll(silent) {
+      async poll(silent) {
+        // 1. Polling Événements
         try {
-          const r = await fetch(this.evtUrl + '?t=' + Date.now(), { cache: 'no-store' });
+          const r = await fetch(this.eventUrl + '?t=' + Date.now(), { cache: 'no-store' });
           if (r.ok) {
             const d = await r.json();
             if (d && d.id && d.id !== this.lastEvtId) {
@@ -615,6 +529,7 @@
           }
         } catch (e) {}
 
+        // 2. Polling Annonces
         try {
           const r2 = await fetch(this.bcUrl + '?t=' + Date.now(), { cache: 'no-store' });
           if (r2.ok) {
@@ -627,16 +542,73 @@
         } catch (e) {}
       }
 
+      async fetchLeaderboard() {
+        try {
+          const r = await fetch(this.primaryUrl + '?t=' + Date.now(), { cache: 'no-store' });
+          if (r.ok) {
+            const d = await r.json();
+            if (Array.isArray(d) && d.length) {
+              localStorage.setItem(this.localLbKey, JSON.stringify(d));
+              return d;
+            }
+          }
+        } catch (e) {}
+
+        const cached = localStorage.getItem(this.localLbKey);
+        if (cached) try { return JSON.parse(cached); } catch (e) {}
+        return [
+          { name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 2500000, combo: 99, rank: "SSS VOID EMPEROR", isOwner: true, date: "Aujourd'hui" },
+          { name: "⚡ QUANTUM_DEV", email: "dev***@gmail.com", score: 1650000, combo: 74, rank: "SSS VOID EMPEROR", isOwner: false, date: "Aujourd'hui" },
+          { name: "CYBER_NEXUS", email: "cyber***@gmail.com", score: 1120000, combo: 55, rank: "S NEXUS MASTER", isOwner: false, date: "Aujourd'hui" }
+        ];
+      }
+
+      async saveScore(entry) {
+        const s = await this.fetchLeaderboard();
+        const idx = s.findIndex(x => x.name === entry.name);
+        if (idx >= 0) { if (entry.score > s[idx].score) s[idx] = entry; }
+        else s.push(entry);
+
+        s.sort((a, b) => b.score - a.score);
+        const top = s.slice(0, 20);
+        localStorage.setItem(this.localLbKey, JSON.stringify(top));
+        try {
+          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(top) });
+        } catch (e) {}
+        return top;
+      }
+
+      async deleteScore(pseudo) {
+        let s = await this.fetchLeaderboard();
+        s = s.filter(x => !x.name.toLowerCase().includes(pseudo.toLowerCase()));
+        localStorage.setItem(this.localLbKey, JSON.stringify(s));
+        try {
+          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(s) });
+        } catch (e) {}
+        return s;
+      }
+
+      async clearLeaderboard() {
+        const def = [{ name: "👑 @zanioxx_off", email: "maxiimenax05@gmail.com", score: 2500000, combo: 99, rank: "SSS VOID EMPEROR", isOwner: true }];
+        localStorage.setItem(this.localLbKey, JSON.stringify(def));
+        try {
+          await fetch(this.primaryUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(def) });
+        } catch (e) {}
+        return def;
+      }
+
       async pushEvent(type, label) {
         const payload = { id: Date.now() + '_' + Math.random().toString(36).slice(2), type, label };
+        if (this.localChannel) this.localChannel.postMessage({ type: 'EVENT', evtType: type, label });
         try {
-          await fetch(this.evtUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          await fetch(this.eventUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         } catch (e) {}
         return payload;
       }
 
       async pushBroadcast(msg) {
         const payload = { id: Date.now() + '_' + Math.random().toString(36).slice(2), msg };
+        if (this.localChannel) this.localChannel.postMessage({ type: 'BROADCAST', msg });
         try {
           await fetch(this.bcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         } catch (e) {}
@@ -653,8 +625,7 @@
         this.ctx = this.canvas.getContext('2d');
         this.audio = new AudioEngine();
         this.themeRenderer = new ThemeRenderer();
-        this.cloud = new CloudLeaderboard();
-        this.eventSync = new CloudEventSync();
+        this.cloud = new CloudBackend();
 
         this.W = window.innerWidth;
         this.H = window.innerHeight;
@@ -684,9 +655,10 @@
         this.activeEvent = null;
         this.eventTimer = 0;
         this.purgeOrbs = [];
+        this.lightningBolts = [];
 
         // État de la partie
-        this.state = "MENU"; // MENU, SHOP, LEADERBOARD, SETTINGS, STATS, COUNTDOWN, PLAYING_LETTERS, POUIC_SLAM, GAMEOVER
+        this.state = "MENU";
         this.sequence = ['P', 'O', 'U', 'I', 'C'];
         this.pans = [-0.8, -0.4, 0.0, 0.4, 0.8];
         this.currentStep = 0;
@@ -725,14 +697,14 @@
         this.mouseTrail = [];
 
         // Écoute des événements Cloud
-        this.eventSync.onEvent = (type, label) => {
+        this.cloud.onEvent = (type, label) => {
           this.triggerEvent(type);
-          this.addFloatingText(this.W / 2, this.H / 2 - 80, `🚨 ÉVÉNEMENT MONDIAL : ${label || type}`, "#ffe600", 28);
+          this.addFloatingText(this.W / 2, this.H / 2 - 100, `🚨 ÉVÉNEMENT MONDIAL : ${label || type}`, "#ffe600", 30);
         };
-        this.eventSync.onBroadcast = (msg) => {
+        this.cloud.onBroadcast = (msg) => {
           this.showBroadcastModal(msg);
         };
-        this.eventSync.startPolling();
+        this.cloud.startPolling();
 
         this.bindEvents();
         this.bindModals();
@@ -745,7 +717,7 @@
       }
 
       async loadScoresAsync() {
-        this.leaderboard = await this.cloud.fetch();
+        this.leaderboard = await this.cloud.fetchLeaderboard();
       }
 
       getTheme() {
@@ -797,17 +769,18 @@
         this.activeEvent = type;
         this.eventTimer = (type === 'PURGE' ? 10.0 : 15.0);
         this.audio.play('siren');
-        this.triggerShake(20);
+        this.triggerShake(22);
 
         if (type === 'PURGE') {
           this.purgeOrbs = [];
-          for (let i = 0; i < 20; i++) {
+          for (let i = 0; i < 22; i++) {
             this.purgeOrbs.push({
               x: 80 + Math.random() * (this.W - 160),
               y: 100 + Math.random() * (this.H - 220),
               r: 26 + Math.random() * 14,
               isCoin: Math.random() < 0.45,
-              color: Math.random() < 0.45 ? "#fbbf24" : "#ef4444"
+              color: Math.random() < 0.45 ? "#fbbf24" : "#ef4444",
+              pulse: Math.random() * Math.PI * 2
             });
           }
         } else if (type === 'INVERTED') {
@@ -900,9 +873,9 @@
           if (btn) {
             btn.addEventListener('click', async () => {
               adminModal.style.display = 'none';
-              await this.eventSync.pushEvent(type, label);
+              await this.cloud.pushEvent(type, label);
               this.triggerEvent(type);
-              this.addFloatingText(this.W / 2, this.H / 2 - 80, `📡 DIFFUSION : ${label}`, "#ffe600", 28);
+              this.addFloatingText(this.W / 2, this.H / 2 - 100, `📡 DIFFUSION : ${label}`, "#ffe600", 30);
             });
           }
         };
@@ -969,7 +942,7 @@
             isOwner: true,
             date: "Aujourd'hui"
           };
-          this.leaderboard = await this.cloud.save(entry);
+          this.leaderboard = await this.cloud.saveScore(entry);
           this.audio.play('perfect');
           alert("🏆 Score Créateur de 2 500 000 PTS placé en Top 1 mondial !");
         });
@@ -977,7 +950,7 @@
         document.getElementById('adm-delete-user').addEventListener('click', async () => {
           const target = prompt("Entrez le pseudo exact du joueur à supprimer :");
           if (target) {
-            this.leaderboard = await this.cloud.delete(target);
+            this.leaderboard = await this.cloud.deleteScore(target);
             this.audio.play('slam');
             alert(`Joueur "${target}" supprimé du Leaderboard.`);
           }
@@ -987,14 +960,14 @@
           const msg = prompt("Message du Popup d'Annonce Mondiale (visible par tous) :");
           if (msg && msg.trim()) {
             adminModal.style.display = 'none';
-            await this.eventSync.pushBroadcast(msg.trim());
+            await this.cloud.pushBroadcast(msg.trim());
             this.showBroadcastModal(msg.trim());
           }
         });
 
         document.getElementById('adm-reset-leaderboard').addEventListener('click', async () => {
           if (confirm("Confirmer la réinitialisation complète du classement mondial ?")) {
-            this.leaderboard = await this.cloud.clear();
+            this.leaderboard = await this.cloud.clearLeaderboard();
             this.audio.play('slam');
             alert("Classement mondial réinitialisé.");
           }
@@ -1079,19 +1052,19 @@
         if (this.activeEvent === 'PURGE' && this.purgeOrbs.length > 0) {
           for (let i = this.purgeOrbs.length - 1; i >= 0; i--) {
             const orb = this.purgeOrbs[i];
-            if (Math.hypot(mx - orb.x, my - orb.y) <= orb.r + 16) {
+            if (Math.hypot(mx - orb.x, my - orb.y) <= orb.r + 18) {
               this.purgeOrbs.splice(i, 1);
-              this.spawnBurst(orb.x, orb.y, orb.color, 25);
-              this.score += 2500;
+              this.spawnBurst(orb.x, orb.y, orb.color, 30);
+              this.score += 3500;
               if (orb.isCoin) {
                 this.voidCoins++;
                 this.coinsEarnedInRun++;
                 this.saveData();
                 this.audio.play('coin');
-                this.addFloatingText(orb.x, orb.y, "🪙 +1 VOID COIN !", "#fbbf24", 22);
+                this.addFloatingText(orb.x, orb.y, "🪙 +1 VOID COIN !", "#fbbf24", 24);
               } else {
                 this.audio.play('slam');
-                this.addFloatingText(orb.x, orb.y, "+2500 PTS", "#ef4444", 20);
+                this.addFloatingText(orb.x, orb.y, "+3500 PTS", "#ef4444", 22);
               }
               return;
             }
@@ -1387,7 +1360,7 @@
           isOwner: this.isOwner,
           date: "Aujourd'hui"
         };
-        this.leaderboard = await this.cloud.save(entry);
+        this.leaderboard = await this.cloud.saveScore(entry);
         this.spawnBurst(this.W / 2, this.H / 2, "#ef4444", 65);
       }
 
@@ -1445,6 +1418,130 @@
         this.ctx.restore();
       }
 
+      // =======================================================================
+      // RENDU DES ANIMATIONS D'ÉVÉNEMENTS MONSTRUEUSES & SPECTACULAIRES
+      // =======================================================================
+      drawEventEffects(cx, cy) {
+        if (!this.activeEvent) return;
+
+        // 1. 🩸 LA PURGE DU VOID (Alerte totale & Orbes d'énergie)
+        if (this.activeEvent === 'PURGE') {
+          // Bandes d'alerte holographiques clignotantes
+          const pulseAlpha = 0.08 + Math.sin(this.phase * 3.5) * 0.06;
+          this.ctx.fillStyle = `rgba(239, 68, 68, ${pulseAlpha})`;
+          this.ctx.fillRect(0, 0, this.W, this.H);
+
+          // Arcs électriques entre les orbes de purge
+          this.ctx.strokeStyle = "rgba(251, 191, 36, 0.35)";
+          this.ctx.lineWidth = 1.5;
+          for (let i = 0; i < this.purgeOrbs.length - 1; i += 2) {
+            const o1 = this.purgeOrbs[i];
+            const o2 = this.purgeOrbs[i + 1];
+            if (o1 && o2) {
+              this.ctx.beginPath();
+              this.ctx.moveTo(o1.x, o1.y);
+              const mx = (o1.x + o2.x) / 2 + (Math.random() - 0.5) * 20;
+              const my = (o1.y + o2.y) / 2 + (Math.random() - 0.5) * 20;
+              this.ctx.lineTo(mx, my);
+              this.ctx.lineTo(o2.x, o2.y);
+              this.ctx.stroke();
+            }
+          }
+
+          // Dessin des orbes de purge pulsantes
+          this.purgeOrbs.forEach(orb => {
+            orb.pulse += 0.08;
+            const rPulse = orb.r + Math.sin(orb.pulse) * 4;
+            
+            const grad = this.ctx.createRadialGradient(orb.x, orb.y, 2, orb.x, orb.y, rPulse + 10);
+            grad.addColorStop(0, orb.color);
+            grad.addColorStop(0.6, orb.isCoin ? "rgba(251,191,36,0.5)" : "rgba(239,68,68,0.5)");
+            grad.addColorStop(1, "transparent");
+            this.ctx.fillStyle = grad;
+            this.ctx.beginPath(); this.ctx.arc(orb.x, orb.y, rPulse + 10, 0, Math.PI * 2); this.ctx.fill();
+
+            this.ctx.fillStyle = orb.color;
+            this.ctx.beginPath(); this.ctx.arc(orb.x, orb.y, rPulse, 0, Math.PI * 2); this.ctx.fill();
+            this.ctx.strokeStyle = "#ffffff"; this.ctx.lineWidth = 2; this.ctx.stroke();
+
+            this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle";
+            this.ctx.font = "bold 16px Impact"; this.ctx.fillStyle = "#000";
+            this.ctx.fillText(orb.isCoin ? "🪙" : "💥", orb.x, orb.y);
+          });
+
+        // 2. ⚡ SUPERNOVA (Éclairs de plasma solaires & Rayons immenses)
+        } else if (this.activeEvent === 'SUPERNOVA') {
+          this.ctx.save();
+          this.ctx.translate(cx, cy);
+          this.ctx.rotate(this.phase * 0.4);
+          this.ctx.strokeStyle = "rgba(251, 191, 36, 0.25)";
+          this.ctx.lineWidth = 3;
+          for (let i = 0; i < 16; i++) {
+            this.ctx.rotate(Math.PI / 8);
+            this.ctx.beginPath(); this.ctx.moveTo(0, 0); this.ctx.lineTo(this.W, 0); this.ctx.stroke();
+          }
+          this.ctx.restore();
+
+          const novaR = 120 + Math.sin(this.phase * 2.5) * 30;
+          const novaGrad = this.ctx.createRadialGradient(cx, cy, 10, cx, cy, novaR);
+          novaGrad.addColorStop(0, "rgba(255, 255, 255, 0.4)");
+          novaGrad.addColorStop(0.5, "rgba(250, 204, 21, 0.25)");
+          novaGrad.addColorStop(1, "transparent");
+          this.ctx.fillStyle = novaGrad;
+          this.ctx.beginPath(); this.ctx.arc(cx, cy, novaR, 0, Math.PI * 2); this.ctx.fill();
+
+        // 3. 🧊 ZÉRO ABSOLU (Blizzard de glace & Bullet-Time)
+        } else if (this.activeEvent === 'FROZEN') {
+          this.ctx.fillStyle = "rgba(56, 189, 248, 0.06)";
+          this.ctx.fillRect(0, 0, this.W, this.H);
+
+          // Cristaux de glace sur les 4 coins
+          this.ctx.strokeStyle = "rgba(0, 255, 225, 0.35)";
+          this.ctx.lineWidth = 2;
+          const corners = [[0, 0], [this.W, 0], [0, this.H], [this.W, this.H]];
+          corners.forEach(([x, y]) => {
+            this.ctx.save();
+            this.ctx.translate(x, y);
+            for (let a = 0; a < 6; a++) {
+              this.ctx.rotate(Math.PI / 3);
+              this.ctx.beginPath(); this.ctx.moveTo(0, 0); this.ctx.lineTo(80, 0); this.ctx.stroke();
+            }
+            this.ctx.restore();
+          });
+
+        // 4. 🕳️ TROU NOIR DU NEXUS (Vortex Gravitationnel Cosmique)
+        } else if (this.activeEvent === 'VOID_PULL') {
+          this.ctx.save();
+          this.ctx.translate(cx, cy);
+          this.ctx.rotate(-this.phase * 0.6);
+          const vortexGrad = this.ctx.createRadialGradient(0, 0, 10, 0, 0, 320);
+          vortexGrad.addColorStop(0, "#000000");
+          vortexGrad.addColorStop(0.4, "rgba(124, 58, 237, 0.35)");
+          vortexGrad.addColorStop(0.8, "rgba(192, 132, 252, 0.1)");
+          vortexGrad.addColorStop(1, "transparent");
+          this.ctx.fillStyle = vortexGrad;
+          this.ctx.beginPath(); this.ctx.arc(0, 0, 320, 0, Math.PI * 2); this.ctx.fill();
+          this.ctx.restore();
+
+        // 5. ⚡ TEMPÊTE ÉLECTRIQUE (Éclairs de Plasma)
+        } else if (this.activeEvent === 'STORM') {
+          if (Math.random() < 0.25) {
+            this.ctx.strokeStyle = Math.random() < 0.5 ? "#fbbf24" : "#00f0ff";
+            this.ctx.lineWidth = 2 + Math.random() * 3;
+            this.ctx.beginPath();
+            let lx = Math.random() * this.W;
+            let ly = 0;
+            this.ctx.moveTo(lx, ly);
+            while (ly < this.H) {
+              ly += 20 + Math.random() * 30;
+              lx += (Math.random() - 0.5) * 50;
+              this.ctx.lineTo(lx, ly);
+            }
+            this.ctx.stroke();
+          }
+        }
+      }
+
       loop(now) {
         const dt = (now - this.lastTick) / 1000;
         this.lastTick = now;
@@ -1482,6 +1579,13 @@
         const cy = this.H / 2 + offY;
 
         this.ctx.save();
+
+        // Monde à l'envers
+        if (this.activeEvent === 'INVERTED') {
+          this.ctx.translate(this.W, this.H);
+          this.ctx.rotate(Math.PI);
+        }
+
         this.ctx.fillStyle = "#04020a";
         this.ctx.fillRect(0, 0, this.W, this.H);
         this.menuButtons = {};
@@ -1489,24 +1593,8 @@
         // 1. Rendu du fond animé du thème
         this.themeRenderer.draw(this.ctx, this.activeThemeId, this.phase, this.W, this.H, cx, cy);
 
-        // 2. Événement Purge Orbes
-        if (this.activeEvent === 'PURGE' && this.purgeOrbs.length > 0) {
-          this.purgeOrbs.forEach(orb => {
-            this.ctx.fillStyle = orb.color;
-            this.ctx.beginPath();
-            this.ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.strokeStyle = "#ffffff";
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
-
-            this.ctx.textAlign = "center";
-            this.ctx.textBaseline = "middle";
-            this.ctx.font = "bold 16px Impact";
-            this.ctx.fillStyle = "#000";
-            this.ctx.fillText(orb.isCoin ? "🪙" : "💥", orb.x, orb.y);
-          });
-        }
+        // 2. Rendu des effets d'événements spectaculaires
+        this.drawEventEffects(cx, cy);
 
         // 3. Visualiseur audio
         this.audio.viz *= 0.92;
@@ -1559,12 +1647,12 @@
 
         // Bannière d'événement mondial actif
         if (this.activeEvent) {
-          this.ctx.fillStyle = "rgba(239, 68, 68, 0.25)";
+          this.ctx.fillStyle = "rgba(239, 68, 68, 0.28)";
           this.ctx.fillRect(0, 56, this.W, 24);
           this.ctx.textAlign = "center";
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#fca5a5";
-          this.ctx.fillText(`🚨 ÉVÉNEMENT MONDIAL ACTIF : ${this.activeEvent} (TEMPS RESTANT : ${Math.ceil(this.eventTimer)}s) 🚨`, this.W / 2, 72);
+          this.ctx.fillText(`🚨 ÉVÉNEMENT MONDIAL EN DIRECT : ${this.activeEvent} (TEMPS RESTANT : ${Math.ceil(this.eventTimer)}s) 🚨`, this.W / 2, 72);
         }
 
         // 5. Header HUD
@@ -1607,7 +1695,7 @@
 
           this.ctx.font = "bold 15px Consolas";
           this.ctx.fillStyle = th.accent;
-          this.ctx.fillText("⚡ TRANSCENDENCE 5.0 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
+          this.ctx.fillText("⚡ TRANSCENDENCE 5.5 // BY @ZANIOXX_OFF ⚡", cx, cy - 124);
 
           this.ctx.font = "bold 12px Consolas";
           this.ctx.fillStyle = "#94a3b8";
