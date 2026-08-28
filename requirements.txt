@@ -1,0 +1,2 @@
+# Aucune dépendance externe requise (100% Standard Python Library)
+# Nécessite Python 3.10+ sous Windows (tkinter inclus avec l'installateur officiel Python)
