@@ -784,6 +784,77 @@ class CloudLeaderboard {
 }
 
 // =========================================================================
+// 4b. SYNCHRONISATION CLOUD DES ÉVÉNEMENTS MONDIAUX (polling 3s)
+// =========================================================================
+class CloudEventSync {
+  constructor(){
+    this.baseUrl="https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_event_v45";
+    this.bcUrl="https://kvdb.io/8D42gU9Z9rC9p4m1Qz7y/void_nexus_broadcast_v45";
+    this.lastEventId=null;
+    this.lastBroadcastId=null;
+    this.onEvent=null;   // callback(type)
+    this.onBroadcast=null; // callback(msg)
+    this._pollInterval=null;
+  }
+
+  startPolling(){
+    // Charge l'état initial sans le déclencher
+    this._poll(true).then(()=>{
+      this._pollInterval=setInterval(()=>this._poll(false),3000);
+    });
+  }
+
+  stopPolling(){
+    if(this._pollInterval){clearInterval(this._pollInterval);this._pollInterval=null}
+  }
+
+  async _poll(silent){
+    try{
+      // Événement mondial
+      const evtRes=await fetch(this.baseUrl+'?t='+Date.now(),{cache:'no-store'});
+      if(evtRes.ok){
+        const evtData=await evtRes.json();
+        if(evtData&&evtData.id&&evtData.id!==this.lastEventId){
+          this.lastEventId=evtData.id;
+          if(!silent&&evtData.type&&this.onEvent){
+            this.onEvent(evtData.type,evtData.label||evtData.type);
+          }
+        }
+      }
+    }catch(e){}
+    try{
+      // Annonce mondiale
+      const bcRes=await fetch(this.bcUrl+'?t='+Date.now(),{cache:'no-store'});
+      if(bcRes.ok){
+        const bcData=await bcRes.json();
+        if(bcData&&bcData.id&&bcData.id!==this.lastBroadcastId){
+          this.lastBroadcastId=bcData.id;
+          if(!silent&&bcData.msg&&this.onBroadcast){
+            this.onBroadcast(bcData.msg);
+          }
+        }
+      }
+    }catch(e){}
+  }
+
+  async pushEvent(type,label){
+    const payload={id:Date.now()+'_'+Math.random().toString(36).slice(2),type,label,ts:new Date().toISOString()};
+    try{
+      await fetch(this.baseUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(e){}
+    return payload;
+  }
+
+  async pushBroadcast(msg){
+    const payload={id:Date.now()+'_'+Math.random().toString(36).slice(2),msg,ts:new Date().toISOString()};
+    try{
+      await fetch(this.bcUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(e){}
+    return payload;
+  }
+}
+
+// =========================================================================
 // 5. MOTEUR D'ÉVÉNEMENTS MONDIAUX AVEC EFFETS FULL-SCREEN
 // =========================================================================
 class WorldEventEngine {
@@ -1076,6 +1147,18 @@ class VoidGame {
     this.btns={};this.mBtns={};
     this.mouse={x:this.W/2,y:this.H/2};this.trail=[];
 
+    // Synchronisation cloud des événements mondiaux (tous les joueurs)
+    this.eventSync=new CloudEventSync();
+    this.eventSync.onEvent=(type,label)=>{
+      this.eventEngine.trigger(type,this.W,this.H);
+      this.addFloat(this.W/2,this.H/2-80,label||('🌪️ '+type),'#ffe600',28);
+      this._shake(25);
+    };
+    this.eventSync.onBroadcast=(msg)=>{
+      this._showBroadcast(msg);
+    };
+    this.eventSync.startPolling();
+
     this._bindEvents();this._bindModals();this._checkBroadcast();
     requestAnimationFrame(t=>this._loop(t));
   }
@@ -1167,12 +1250,16 @@ class VoidGame {
     const closeAdm=document.getElementById('close-admin-btn');
 
     ['purge','invert','supernova','freeze','void','storm'].forEach(evtId=>{
-      document.getElementById(`adm-trigger-${evtId}`)?.addEventListener('click',()=>{
+      document.getElementById(`adm-trigger-${evtId}`)?.addEventListener('click',async ()=>{
         adm.style.display='none';
         const map={purge:'PURGE',invert:'INVERTED',supernova:'SUPERNOVA',freeze:'FROZEN',void:'VOID_PULL',storm:'STORM'};
-        this.eventEngine.trigger(map[evtId],this.W,this.H);
         const labels={PURGE:'🩸 LA PURGE DU VOID',INVERTED:'🔄 MONDE À L\'ENVERS',SUPERNOVA:'⚡ SUPERNOVA OVERDRIVE',FROZEN:'🧊 ZÉRO ABSOLU',VOID_PULL:'🕳️ TROU NOIR DU NEXUS',STORM:'⚡ TEMPÊTE ÉLECTRIQUE'};
-        this.addFloat(this.W/2,this.H/2-80,labels[map[evtId]]||'ÉVÉNEMENT NEXUS !','#ffe600',28);
+        const type=map[evtId];const label=labels[type]||'🌪️ ÉVÉNEMENT DU NEXUS';
+        // Push vers le cloud → tous les joueurs reçoivent l'événement en <3s
+        await this.eventSync.pushEvent(type,label);
+        // Aussi déclenché localement pour l'Owner immédiatement
+        this.eventEngine.trigger(type,this.W,this.H);
+        this.addFloat(this.W/2,this.H/2-80,`📡 DIFFUSION : ${label}`,'#ffe600',28);
         this._shake(25);
       });
     });
@@ -1200,8 +1287,13 @@ class VoidGame {
     document.getElementById('adm-delete-user').addEventListener('click',async()=>{
       const p=prompt('Pseudo à supprimer :');if(p){this.leaderboard=await this.cloud.delete(p);this.audio.play('slam');alert(`Supprimé : ${p}`)}
     });
-    document.getElementById('adm-broadcast').addEventListener('click',()=>{
-      const msg=prompt('Message du Popup Mondial :');if(msg&&msg.trim()){adm.style.display='none';this._showBroadcast(msg.trim())}
+    document.getElementById('adm-broadcast').addEventListener('click',async ()=>{
+      const msg=prompt('📢 Message du Popup Mondial (visible par TOUS les joueurs) :');
+      if(msg&&msg.trim()){
+        adm.style.display='none';
+        await this.eventSync.pushBroadcast(msg.trim()); // Push cloud → tous les joueurs
+        this._showBroadcast(msg.trim()); // Aussi affiché localement immédiatement
+      }
     });
     document.getElementById('adm-reset-leaderboard').addEventListener('click',async()=>{
       if(confirm('Réinitialiser le leaderboard mondial ?')){this.leaderboard=await this.cloud.clear();this.audio.play('slam');alert('Leaderboard réinitialisé.')}
@@ -1631,7 +1723,7 @@ class VoidGame {
       const gaugeCol=ratio>.4?th.primary:ratio>.2?'#fbbf24':'#ef4444';
       ctx.lineWidth=6;ctx.strokeStyle=gaugeCol;
       ctx.shadowBlur=ratio<.2?20:0;ctx.shadowColor='#ef4444';
-      ctx.beginPath();ctx.arc(cx,cy,-Math.PI/2,-Math.PI/2+Math.PI*2*ratio,false,false);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,cy,timerR,-Math.PI/2,-Math.PI/2+Math.PI*2*ratio,false);ctx.stroke();
       ctx.shadowBlur=0;ctx.lineWidth=1;
 
       // Orbes P-O-U-I-C
